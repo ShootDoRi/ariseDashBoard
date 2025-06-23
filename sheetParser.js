@@ -8,7 +8,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // 구글 시트 정보
-const SPREADSHEET_ID = "1yWA5vk9WyQJeRscy7gaatfkZXFBerLwI93IlWIN9WZs";
+//const SPREADSHEET_ID = "1yWA5vk9WyQJeRscy7gaatfkZXFBerLwI93IlWIN9WZs";
+//1XYHDDyck67QiJ21eSPK0KJzgOWJv3LevmbXeo4ULDI8
+const SPREADSHEET_ID = "1XYHDDyck67QiJ21eSPK0KJzgOWJv3LevmbXeo4ULDI8";
 const RANGE = "A9:P58"; // A9부터 P58까지 (9행부터 데이터)
 const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 

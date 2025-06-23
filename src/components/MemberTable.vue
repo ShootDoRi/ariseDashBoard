@@ -149,6 +149,34 @@ const sortedData = computed(() => {
   return data.sort((a, b) => {
     const aVal = a[sortKey.value];
     const bVal = b[sortKey.value];
+
+    // 격노, Rank 정렬 시 값이 없는 것들은 항상 뒤로
+    if (["격노", "Rank"].includes(sortKey.value)) {
+      const isEmpty = (v) =>
+        v === undefined || v === null || v === "" || v === "#N/A";
+      const aEmpty = isEmpty(aVal);
+      const bEmpty = isEmpty(bVal);
+      if (aEmpty && !bEmpty) return 1;
+      if (!aEmpty && bEmpty) return -1;
+      if (aEmpty && bEmpty) return 0;
+      // 값이 모두 있으면 숫자 비교 (Rank는 문자열 숫자일 수 있으니 Number로 변환)
+      return (Number(aVal) - Number(bVal)) * sortOrder.value;
+    }
+
+    // 숫자 비교 우선, 아니면 문자열 비교
+    if (!isNaN(Number(aVal)) && !isNaN(Number(bVal))) {
+      return (Number(aVal) - Number(bVal)) * sortOrder.value;
+    }
+    return String(aVal).localeCompare(String(bVal), "ko") * sortOrder.value;
+  });
+});
+
+const sortedData_ = computed(() => {
+  const data = [...commonStore.tableData];
+  if (!sortKey.value) return data;
+  return data.sort((a, b) => {
+    const aVal = a[sortKey.value];
+    const bVal = b[sortKey.value];
     // 숫자 비교 우선, 아니면 문자열 비교
     if (!isNaN(Number(aVal)) && !isNaN(Number(bVal))) {
       return (Number(aVal) - Number(bVal)) * sortOrder.value;

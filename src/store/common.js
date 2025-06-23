@@ -10,8 +10,22 @@ export const useCommonStore = defineStore("common", () => {
   ]);
 
   // 평균 격노 계산 (숫자 변환 및 NaN 방지)
+  const averageRage_ = computed(() => {
+    const rageArr = tableData
+      .map((m) => Number(m["격노"]))
+      .filter((v) => !isNaN(v));
+    if (rageArr.length === 0) return 0;
+    return (rageArr.reduce((a, b) => a + b, 0) / rageArr.length).toFixed(2);
+  });
+
   const averageRage = computed(() => {
-    const rageArr = tableData.map((m) => Number(m["격노"])).filter((v) => !isNaN(v));
+    // 격노 값이 실제로 존재하는 데이터만 평균에 포함
+    const rageArr = tableData
+      .filter(
+        (m) => m["격노"] !== undefined && m["격노"] !== null && m["격노"] !== ""
+      )
+      .map((m) => Number(m["격노"]))
+      .filter((v) => !isNaN(v));
     if (rageArr.length === 0) return 0;
     return (rageArr.reduce((a, b) => a + b, 0) / rageArr.length).toFixed(2);
   });
