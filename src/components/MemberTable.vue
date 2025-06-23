@@ -3,18 +3,102 @@
     <table class="member-table">
       <thead>
         <tr>
-          <th class="col-no" @click="sortBy('순번')">순번</th>
-          <th class="col-nick" @click="sortBy('인게임_닉')">인게임_닉</th>
-          <th class="col-tag" @click="sortBy('태그')">태그</th>
-          <th class="col-gal" @click="sortBy('갤닉')">갤닉</th>
-          <th class="col-pos" @click="sortBy('직위')">직위</th>
-          <th class="col-bc" @click="sortBy('배틀클래스')">배클</th>
-          <th class="col-boss" @click="sortBy('보스공헌도')">보스공헌도</th>
-          <th class="col-mission" @click="sortBy('미션공헌도')">미션공헌도</th>
-          <th class="col-total" @click="sortBy('공헌도합')">공헌도합</th>
-          <th class="col-raid" @click="sortBy('길드레이드_점수')">길드레이드_점수</th>
-          <th class="col-rage" @click="sortBy('격노')">격노</th>
-          <th class="col-rank" @click="sortBy('Rank')">Rank</th>
+          <th class="col-no" @click="sortBy('순번')">
+            순번
+            <span class="sort-icon" v-if="sortKey === '순번'">
+              <span :class="{ active: sortOrder === 1 }">▲</span>
+              <span :class="{ active: sortOrder === -1 }">▼</span>
+            </span>
+            <span class="sort-icon" v-else>▲▼</span>
+          </th>
+          <th class="col-nick" @click="sortBy('인게임_닉')">
+            인게임_닉
+            <span class="sort-icon" v-if="sortKey === '인게임_닉'">
+              <span :class="{ active: sortOrder === 1 }">▲</span>
+              <span :class="{ active: sortOrder === -1 }">▼</span>
+            </span>
+            <span class="sort-icon" v-else>▲▼</span>
+          </th>
+          <th class="col-tag" @click="sortBy('태그')">
+            태그
+            <span class="sort-icon" v-if="sortKey === '태그'">
+              <span :class="{ active: sortOrder === 1 }">▲</span>
+              <span :class="{ active: sortOrder === -1 }">▼</span>
+            </span>
+            <span class="sort-icon" v-else>▲▼</span>
+          </th>
+          <th class="col-gal" @click="sortBy('갤닉')">
+            갤닉
+            <span class="sort-icon" v-if="sortKey === '갤닉'">
+              <span :class="{ active: sortOrder === 1 }">▲</span>
+              <span :class="{ active: sortOrder === -1 }">▼</span>
+            </span>
+            <span class="sort-icon" v-else>▲▼</span>
+          </th>
+          <th class="col-pos" @click="sortBy('직위')">
+            직위
+            <span class="sort-icon" v-if="sortKey === '직위'">
+              <span :class="{ active: sortOrder === 1 }">▲</span>
+              <span :class="{ active: sortOrder === -1 }">▼</span>
+            </span>
+            <span class="sort-icon" v-else>▲▼</span>
+          </th>
+          <th class="col-bc" @click="sortBy('배틀클래스')">
+            배클
+            <span class="sort-icon" v-if="sortKey === '배틀클래스'">
+              <span :class="{ active: sortOrder === 1 }">▲</span>
+              <span :class="{ active: sortOrder === -1 }">▼</span>
+            </span>
+            <span class="sort-icon" v-else>▲▼</span>
+          </th>
+          <th class="col-boss" @click="sortBy('보스공헌도')">
+            보스공헌도
+            <span class="sort-icon" v-if="sortKey === '보스공헌도'">
+              <span :class="{ active: sortOrder === 1 }">▲</span>
+              <span :class="{ active: sortOrder === -1 }">▼</span>
+            </span>
+            <span class="sort-icon" v-else>▲▼</span>
+          </th>
+          <th class="col-mission" @click="sortBy('미션공헌도')">
+            미션공헌도
+            <span class="sort-icon" v-if="sortKey === '미션공헌도'">
+              <span :class="{ active: sortOrder === 1 }">▲</span>
+              <span :class="{ active: sortOrder === -1 }">▼</span>
+            </span>
+            <span class="sort-icon" v-else>▲▼</span>
+          </th>
+          <th class="col-total" @click="sortBy('공헌도합')">
+            공헌도합
+            <span class="sort-icon" v-if="sortKey === '공헌도합'">
+              <span :class="{ active: sortOrder === 1 }">▲</span>
+              <span :class="{ active: sortOrder === -1 }">▼</span>
+            </span>
+            <span class="sort-icon" v-else>▲▼</span>
+          </th>
+          <th class="col-raid" @click="sortBy('길드레이드_점수')">
+            길드레이드_점수
+            <span class="sort-icon" v-if="sortKey === '길드레이드_점수'">
+              <span :class="{ active: sortOrder === 1 }">▲</span>
+              <span :class="{ active: sortOrder === -1 }">▼</span>
+            </span>
+            <span class="sort-icon" v-else>▲▼</span>
+          </th>
+          <th class="col-rage" @click="sortBy('격노')">
+            격노
+            <span class="sort-icon" v-if="sortKey === '격노'">
+              <span :class="{ active: sortOrder === 1 }">▲</span>
+              <span :class="{ active: sortOrder === -1 }">▼</span>
+            </span>
+            <span class="sort-icon" v-else>▲▼</span>
+          </th>
+          <th class="col-rank" @click="sortBy('Rank')">
+            Rank
+            <span class="sort-icon" v-if="sortKey === 'Rank'">
+              <span :class="{ active: sortOrder === 1 }">▲</span>
+              <span :class="{ active: sortOrder === -1 }">▼</span>
+            </span>
+            <span class="sort-icon" v-else>▲▼</span>
+          </th>
           <th class="col-etc">기타사항</th>
         </tr>
       </thead>
@@ -177,5 +261,18 @@ onMounted(() => {
     display: table-cell;
     width: 25%; /* 4개 컬럼이 균등하게 분배 */
   }
+}
+
+/* ...기존 스타일... */
+.sort-icon {
+  font-size: 0.85em;
+  margin-left: 4px;
+  color: #bfc2e2;
+  letter-spacing: -2px;
+  user-select: none;
+}
+.sort-icon .active {
+  color: #4fd1c5;
+  font-weight: bold;
 }
 </style>
