@@ -1,6 +1,6 @@
 <template>
   <header class="topbar">
-    <input class="search" placeholder="Search" v-model="commonStore.searchState.keyword" />
+    <input class="search" placeholder="Search" :value="commonStore.searchState.keyword" @input="onInput" />
   </header>
 </template>
 
@@ -8,7 +8,9 @@
 import { useCommonStore } from "../store/common";
 const commonStore = useCommonStore();
 
-// 상단바 컴포넌트
+function onInput(e) {
+  commonStore.searchState.keyword = e.target.value;
+}
 </script>
 
 <style scoped>

@@ -104,18 +104,18 @@
       </thead>
       <tbody>
         <tr v-for="m in filteredData" :key="m.no" @click.stop="openUserModal(m)" style="cursor: pointer">
-          <td class="col-no">{{ m["순번"] }}</td>
-          <td class="col-nick">{{ m["인게임_닉"] }}</td>
-          <td class="col-tag">{{ m["태그"] }}</td>
-          <td class="col-gal">{{ m["갤닉"] }}</td>
-          <td class="col-pos">{{ m["직위"] }}</td>
-          <td class="col-bc">{{ m["배틀클래스"] }}</td>
-          <td class="col-boss">{{ m["보스공헌도"] }}</td>
-          <td class="col-mission">{{ m["미션공헌도"] }}</td>
-          <td class="col-total">{{ m["공헌도합"] }}</td>
-          <td class="col-raid">{{ m["길드레이드_점수"] }}</td>
-          <td class="col-rage">{{ m["격노"] }}</td>
-          <td class="col-rank">{{ m["Rank"] }}</td>
+          <td class="col-no" v-html="highlight(m['순번'])"></td>
+          <td class="col-nick" v-html="highlight(m['인게임_닉'])"></td>
+          <td class="col-tag" v-html="highlight(m['태그'])"></td>
+          <td class="col-gal" v-html="highlight(m['갤닉'])"></td>
+          <td class="col-pos" v-html="highlight(m['직위'])"></td>
+          <td class="col-bc" v-html="highlight(m['배틀클래스'])"></td>
+          <td class="col-boss" v-html="highlight(m['보스공헌도'])"></td>
+          <td class="col-mission" v-html="highlight(m['미션공헌도'])"></td>
+          <td class="col-total" v-html="highlight(m['공헌도합'])"></td>
+          <td class="col-raid" v-html="highlight(m['길드레이드_점수'])"></td>
+          <td class="col-rage" v-html="highlight(m['격노'])"></td>
+          <td class="col-rank" v-html="highlight(m['Rank'])"></td>
           <td class="col-etc">
             <button v-if="m.note === 'Check'" class="note-btn">Check</button>
             <input v-else type="checkbox" />
@@ -188,6 +188,14 @@ const sortedData_ = computed(() => {
   });
 });
 
+// 하이라이트 함수
+function highlight(text) {
+  const keyword = commonStore.searchState.keyword.trim();
+  if (!keyword || keyword.length < 2 || !text) return text ?? "";
+  const re = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
+  return String(text).replace(re, '<span class="highlight">$1</span>');
+}
+
 watch(
   () => commonStore.tableData,
   (newData) => {
@@ -225,7 +233,7 @@ onMounted(() => {
 <style scoped>
 .table-wrap {
   background: #23232e;
-  //background: #4b4b4c;
+  /* background: #4b4b4c; */
   border-radius: 14px;
   padding: 0 0 0 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -233,9 +241,9 @@ onMounted(() => {
 .member-table {
   width: 100%;
   border-collapse: collapse;
-  //background: #23232e;
+  /* background: #23232e; */
   background: #4b4b4c;
-  //color: #fff;
+  /* color: #fff; */
   color: #bbb;
   border-radius: 14px;
   overflow: hidden;
@@ -248,9 +256,9 @@ onMounted(() => {
   font-size: 1.01rem;
 }
 .member-table th {
-  //background: #23232e;
+  /* background: #23232e; */
   background: #4b4b4c;
-  //color: #bfc2e2;
+  /* color: #bfc2e2; */
   color: #bbb;
   font-weight: 600;
 }
@@ -266,6 +274,19 @@ onMounted(() => {
   font-size: 0.98rem;
   cursor: pointer;
 }
+
+/* ...기존 스타일... */
+:deep(tbody) {
+  td {
+    span.highlight {
+      background-color: #fff9c0 !important;
+      color: #222;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .table-wrap {
     overflow-x: auto;
