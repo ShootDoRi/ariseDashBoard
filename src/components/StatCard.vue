@@ -27,7 +27,9 @@ const props = defineProps({
 
 <style scoped>
 .stat-card {
-  background: #23232e;
+  //background: #23232e;
+  //background: linear-gradient(135deg, #23232e, #2c2c3a);
+  background: #4b4b4c;
   border-radius: 14px;
   padding: 14px 14px;
   min-width: 120px;

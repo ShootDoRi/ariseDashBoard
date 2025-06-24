@@ -225,6 +225,7 @@ onMounted(() => {
 <style scoped>
 .table-wrap {
   background: #23232e;
+  //background: #4b4b4c;
   border-radius: 14px;
   padding: 0 0 0 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -232,8 +233,10 @@ onMounted(() => {
 .member-table {
   width: 100%;
   border-collapse: collapse;
-  background: #23232e;
-  color: #fff;
+  //background: #23232e;
+  background: #4b4b4c;
+  //color: #fff;
+  color: #bbb;
   border-radius: 14px;
   overflow: hidden;
 }
@@ -245,8 +248,10 @@ onMounted(() => {
   font-size: 1.01rem;
 }
 .member-table th {
-  background: #23232e;
-  color: #bfc2e2;
+  //background: #23232e;
+  background: #4b4b4c;
+  //color: #bfc2e2;
+  color: #bbb;
   font-weight: 600;
 }
 .member-table tr:last-child td {

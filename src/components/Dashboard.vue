@@ -19,6 +19,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { useCommonStore } from "../store/common";
+import { useIsMobile } from "../composables/useIsMobile";
 import StatCard from "./StatCard.vue";
 import PieCard from "./PieCard.vue";
 import MemberTable from "./MemberTable.vue";
@@ -27,6 +28,7 @@ import duration from "dayjs/plugin/duration";
 dayjs.extend(duration);
 
 const commonStore = useCommonStore();
+const isMobile = useIsMobile();
 
 const endDateForm = dayjs("2025-06-26T08:30:00").format("MM/DD HH:mm");
 const endDateObj = dayjs("2025-06-26T08:30:00");
@@ -54,19 +56,13 @@ function updateRemainingTime() {
 
 let timer;
 // 모바일 여부 감지
-const isMobile = ref(false);
-function handleResize() {
-  isMobile.value = window.innerWidth <= 768;
-}
+
 onMounted(() => {
   updateRemainingTime();
   timer = setInterval(updateRemainingTime, 1000 * 1);
-  handleResize();
-  window.addEventListener("resize", handleResize);
 });
 onUnmounted(() => {
   clearInterval(timer);
-  window.removeEventListener("resize", handleResize);
 });
 </script>
 

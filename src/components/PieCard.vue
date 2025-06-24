@@ -3,13 +3,11 @@
     <div class="pie-title">격노 구간</div>
     <div class="container">
       <div class="pie-legend">
-        <div v-for="(itm, idx) in pieData.labels" :key="`data-${idx}`">
-          <span :class="`dot dot${idx + 1}`">{{ itm }}</span>
-        </div>
+        <div v-for="(itm, idx) in pieData.labels" :key="`data-${idx}`"><span :class="`dot dot${idx + 1}`" />{{ itm }}</div>
         <!-- <div><span class="dot dot1"></span>0-199</div>
-      <div><span class="dot dot2"></span>200-249</div>
-      <div><span class="dot dot3"></span>250-299</div>
-      <div><span class="dot dot4"></span>300+</div> -->
+        <div><span class="dot dot2"></span>200-249</div>
+        <div><span class="dot dot3"></span>250-299</div>
+        <div><span class="dot dot4"></span>300+</div> -->
       </div>
       <div class="pie-chart">
         <PieChart :data="pieData" width="80px" height="80px" />
@@ -75,7 +73,7 @@ const pieData = computed(() => {
   });
 
   const data = bins.map((bin) => bin.count);
-  const colors = ["#6c63ff", "#7c7bff", "#a29bfe", "#4fd1c5"];
+  const colors = ["#0088ff", "#01CAD1", "#00D17A", "#FFD324"];
 
   return {
     labels,
@@ -97,9 +95,10 @@ watch(
 );
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .pie-card {
-  background: #23232e;
+  //background: #23232e;
+  background: #4b4b4c;
   border-radius: 14px;
   padding: 24px 20px;
   min-width: 220px;
@@ -127,18 +126,23 @@ watch(
 .pie-legend {
   display: flex;
   flex-wrap: wrap; /* 여러 줄 허용 */
-  gap: 4px 16px; /* 행, 열 간격 */
+  //gap: 4px 16px; /* 행, 열 간격 */
+  gap: 2px;
   font-size: 0.98rem;
   color: #bfc2e2;
-  align-self: flex-start;
+  align-self: center;
+  //justify-content: center;
 }
 
 .container {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 85%;
 }
 
 .pie-legend > div {
-  width: 48%; /* 한 줄에 2개씩 */
+  width: 33%; /* 한 줄에 2개씩 */
   display: flex;
   align-items: center;
 }
@@ -150,16 +154,16 @@ watch(
   margin-right: 8px;
 }
 .dot1 {
-  background: #6c63ff;
+  background: #0088ff;
 }
 .dot2 {
-  background: #7c7bff;
+  background: #01cad1;
 }
 .dot3 {
-  background: #a29bfe;
+  background: #00d17a;
 }
 .dot4 {
-  background: #4fd1c5;
+  background: #ffd324;
 }
 .pie-chart {
   width: 120px;
