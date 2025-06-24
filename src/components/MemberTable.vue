@@ -103,7 +103,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="m in sortedData" :key="m.no">
+        <tr v-for="m in filteredData" :key="m.no" @click.stop="openUserModal(m)" style="cursor: pointer">
           <td class="col-no">{{ m["순번"] }}</td>
           <td class="col-nick">{{ m["인게임_닉"] }}</td>
           <td class="col-tag">{{ m["태그"] }}</td>
@@ -143,27 +143,30 @@ function sortBy(key) {
   }
 }
 
-const sortedData = computed(() => {
-  const data = [...commonStore.tableData];
+// 검색 및 정렬 동시 적용
+const filteredData = computed(() => {
+  const keyword = commonStore.searchState.keyword.trim();
+  let data = [...commonStore.tableData];
+
+  // 2글자 이상일 때만 검색
+  if (keyword.length >= 2) {
+    data = data.filter((row) => Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase()));
+  }
+
+  // 정렬
   if (!sortKey.value) return data;
   return data.sort((a, b) => {
     const aVal = a[sortKey.value];
     const bVal = b[sortKey.value];
-
-    // 격노, Rank 정렬 시 값이 없는 것들은 항상 뒤로
     if (["격노", "Rank"].includes(sortKey.value)) {
-      const isEmpty = (v) =>
-        v === undefined || v === null || v === "" || v === "#N/A";
+      const isEmpty = (v) => v === undefined || v === null || v === "" || v === "#N/A";
       const aEmpty = isEmpty(aVal);
       const bEmpty = isEmpty(bVal);
       if (aEmpty && !bEmpty) return 1;
       if (!aEmpty && bEmpty) return -1;
       if (aEmpty && bEmpty) return 0;
-      // 값이 모두 있으면 숫자 비교 (Rank는 문자열 숫자일 수 있으니 Number로 변환)
       return (Number(aVal) - Number(bVal)) * sortOrder.value;
     }
-
-    // 숫자 비교 우선, 아니면 문자열 비교
     if (!isNaN(Number(aVal)) && !isNaN(Number(bVal))) {
       return (Number(aVal) - Number(bVal)) * sortOrder.value;
     }
@@ -194,6 +197,13 @@ watch(
 );
 
 const members = ref([]);
+
+function openUserModal(member) {
+  //commonStore.openUserModal(member);
+  commonStore.modalState.userData = member;
+  commonStore.modalState.isOpen = true;
+  console.log("Opening user modal for:", member);
+}
 
 onMounted(() => {
   /* members.value = sheetData.map((itm) => {

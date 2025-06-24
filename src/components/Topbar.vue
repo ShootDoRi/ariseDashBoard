@@ -1,10 +1,13 @@
 <template>
   <header class="topbar">
-    <input class="search" placeholder="Search" />
+    <input class="search" placeholder="Search" v-model="commonStore.searchState.keyword" />
   </header>
 </template>
 
 <script setup>
+import { useCommonStore } from "../store/common";
+const commonStore = useCommonStore();
+
 // 상단바 컴포넌트
 </script>
 
