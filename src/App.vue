@@ -1,9 +1,3 @@
-<script setup>
-import Sidebar from "./components/Sidebar.vue";
-import Topbar from "./components/Topbar.vue";
-import UserModal from "./components/UserModal.vue";
-</script>
-
 <template>
   <div class="app-container">
     <Sidebar />
@@ -14,6 +8,11 @@ import UserModal from "./components/UserModal.vue";
     </div>
   </div>
 </template>
+<script setup>
+import Sidebar from "./components/Sidebar.vue";
+import Topbar from "./components/Topbar.vue";
+import UserModal from "./components/UserModal.vue";
+</script>
 
 <style scoped>
 .app-container {
@@ -44,5 +43,12 @@ import UserModal from "./components/UserModal.vue";
     height: auto;
     min-height: 0;
   }
+}
+</style>
+
+<style>
+.dashboard,
+.main-content {
+  padding-top: 56px; /* Topbar 높이만큼 */
 }
 </style>
