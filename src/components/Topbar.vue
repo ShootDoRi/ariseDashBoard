@@ -41,8 +41,8 @@ function onInput(e) {
 .topbar {
   position: fixed;
   top: 0;
-  left: 0;
-  width: 100vw;
+  left: 200px; /* PC에서만 sidebar만큼 띄움 */
+  width: calc(100vw - 200px);
   height: 56px;
   background: #181a20;
   color: #fff;
@@ -50,9 +50,9 @@ function onInput(e) {
   align-items: center;
   justify-content: center;
   border-bottom: 1px solid #23232e;
-  z-index: 2;
-  padding-left: 200px; /* PC 사이드바 너비만큼 */
+  z-index: 2001;
   box-sizing: border-box;
+  padding-left: 0;
 }
 .search {
   background: #23232e;
@@ -66,7 +66,9 @@ function onInput(e) {
 }
 @media (max-width: 1024px) {
   .topbar {
-    padding-left: 56px; /* 모바일/태블릿에서는 padding 56 */
+    left: 0;
+    width: 100vw;
+    padding-left: 0;
   }
 }
 </style>

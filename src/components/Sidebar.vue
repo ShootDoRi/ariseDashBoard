@@ -4,6 +4,10 @@
       <span class="hamburger" @click="toggleSidebar" v-if="isTabletOrLess">☰</span>
       <span v-else>DASH BOARD</span>
     </div>
+    <!-- 서치바를 사이드바 상단에 추가 -->
+    <div class="sidebar-search">
+      <input class="search" placeholder="Search" :value="commonStore.searchState.keyword" @input="onInput" />
+    </div>
     <transition name="slide">
       <div class="drawer" v-if="isTabletOrLess && isOpen">
         <button class="drawer-close" @click="closeSidebar">✕</button>
@@ -26,6 +30,8 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
+import { useCommonStore } from "../store/common";
+const commonStore = useCommonStore();
 
 const isOpen = ref(false);
 const isTabletOrLess = ref(false);
@@ -40,6 +46,9 @@ function toggleSidebar() {
 }
 function closeSidebar() {
   isOpen.value = false;
+}
+function onInput(e) {
+  commonStore.searchState.keyword = e.target.value;
 }
 
 onMounted(() => {
@@ -57,7 +66,7 @@ onUnmounted(() => {
   background: #181a20;
   color: #fff;
   min-height: 100vh;
-  padding: 32px 0;
+  padding: 32px 0 0 0;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
@@ -65,20 +74,33 @@ onUnmounted(() => {
   transition: width 0.2s;
   z-index: 100;
 }
-
-ul li {
-  cursor: pointer;
-}
 .logo {
   font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 40px;
+  margin-bottom: 16px;
   text-align: center;
   letter-spacing: 2px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.sidebar-search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 16px 16px 16px;
+}
+.search {
+  background: #23232e;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  color: #fff;
+  font-size: 1rem;
+  width: 100%;
+  outline: none;
+  box-sizing: border-box;
 }
 .hamburger {
   font-size: 2rem;
@@ -179,8 +201,24 @@ ul li {
     justify-content: flex-start;
     align-items: center;
     height: 56px;
-    width: auto;
+    //width: auto;
+    max-width: fit-content; /* 추가: 내용에 맞게 너비 조정 */
     display: flex;
+  }
+  .sidebar-search {
+    flex: 1 1 auto;
+    padding: 0 8px;
+    height: 56px;
+    align-items: center;
+    display: flex;
+    justify-content: center; /* 추가: 가운데 정렬 */
+  }
+  .search {
+    width: 100%;
+    min-width: 0;
+    max-width: 340px; /* 추가: 너무 넓어지지 않게 */
+    font-size: 1rem;
+    padding: 8px 12px;
   }
   .hamburger {
     display: inline-flex;

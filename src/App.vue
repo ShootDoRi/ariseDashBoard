@@ -2,7 +2,7 @@
   <div class="app-container">
     <Sidebar />
     <div class="main-content">
-      <Topbar />
+      <!-- <Topbar /> -->
       <router-view />
       <UserModal />
     </div>
