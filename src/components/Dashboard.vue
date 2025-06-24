@@ -3,9 +3,11 @@
     <div class="top-row">
       <StatCard title="Season 종료일" :value="endDateForm" />
       <StatCard title="남은 시간" :value="remainingTime" />
-      <StatCard title="격노 평균" :value="commonStore.averageRage" />
-      <!-- <StatCard title="레이드 참여수" value="(50/10)" chart /> -->
-      <StatCard title="레이드 참여수" :value="`(50/${commonStore.actualParticipants})`" />
+      <!-- 모바일에서만 2개씩 한 줄에 -->
+      <div class="stat-row" :class="{ mobile: isMobile }">
+        <StatCard title="격노 평균" :value="commonStore.averageRage" />
+        <StatCard title="레이드 참여수" :value="`(50/${commonStore.actualParticipants})`" />
+      </div>
       <PieCard />
     </div>
     <div class="table-row">
@@ -51,17 +53,24 @@ function updateRemainingTime() {
 }
 
 let timer;
+// 모바일 여부 감지
+const isMobile = ref(false);
+function handleResize() {
+  isMobile.value = window.innerWidth <= 768;
+}
 onMounted(() => {
   updateRemainingTime();
-  //timer = setInterval(updateRemainingTime, 1000 * 30); // 30초마다 갱신
-  timer = setInterval(updateRemainingTime, 1000 * 1); // 1초마다 갱신
+  timer = setInterval(updateRemainingTime, 1000 * 1);
+  handleResize();
+  window.addEventListener("resize", handleResize);
 });
 onUnmounted(() => {
   clearInterval(timer);
+  window.removeEventListener("resize", handleResize);
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .dashboard {
   padding: 32px 32px 0 32px;
   color: #fff;
@@ -77,6 +86,12 @@ onUnmounted(() => {
 .table-row {
   margin-top: 12px;
 }
+
+.stat-row {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
 @media (max-width: 768px) {
   .dashboard {
     padding: 12px 4px 0 4px;
@@ -88,6 +103,21 @@ onUnmounted(() => {
   }
   .table-row {
     margin-top: 6px;
+  }
+  /* 격노 평균, 레이드 참여수 카드만 한 줄에 2개로 */
+  .top-row {
+    display: flex;
+    flex-direction: column;
+  }
+  .stat-row.mobile {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .stat-row.mobile > * {
+    flex: 1 1 0;
+    min-width: 0;
   }
 }
 </style>
