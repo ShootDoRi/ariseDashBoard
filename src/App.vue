@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <Sidebar />
-    <div class="main-content">
+    <div class="main-content" :class="{ mobile: isMobile }">
       <!-- <Topbar /> -->
       <router-view />
       <UserModal />
@@ -10,8 +10,11 @@
 </template>
 <script setup>
 import Sidebar from "./components/Sidebar.vue";
-import Topbar from "./components/Topbar.vue";
+//import Topbar from "./components/Topbar.vue";
 import UserModal from "./components/UserModal.vue";
+import { useIsMobile } from "./composables/useIsMobile";
+const isMobile = useIsMobile();
+//const
 </script>
 
 <style scoped>
@@ -32,6 +35,12 @@ import UserModal from "./components/UserModal.vue";
   min-height: 0;
   height: 100vh;
   overflow-y: auto;
+  padding-top: 0;
+}
+
+.main-content.mobile {
+  padding: 0;
+  padding-top: 56px;
 }
 @media (max-width: 768px) {
   .app-container {
@@ -42,6 +51,7 @@ import UserModal from "./components/UserModal.vue";
   .main-content {
     height: auto;
     min-height: 0;
+    //padding-top: 56px;
   }
 }
 </style>
@@ -49,6 +59,6 @@ import UserModal from "./components/UserModal.vue";
 <style>
 .dashboard,
 .main-content {
-  padding-top: 56px; /* Topbar 높이만큼 */
+  //padding-top: 56px; /* Topbar 높이만큼 */
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <nav class="sidebar" :class="{ open: isOpen }">
     <div class="logo">
-      <span class="hamburger" @click="toggleSidebar" v-if="isTabletOrLess">☰</span>
+      <span class="hamburger" @click="toggleSidebar" v-if="isMobile">☰</span>
       <span v-else>DASH BOARD</span>
     </div>
     <!-- 서치바를 사이드바 상단에 추가 -->
@@ -9,7 +9,7 @@
       <input class="search" placeholder="Search" :value="commonStore.searchState.keyword" @input="onInput" />
     </div>
     <transition name="slide">
-      <div class="drawer" v-if="isTabletOrLess && isOpen">
+      <div class="drawer" v-if="isMobile && isOpen">
         <button class="drawer-close" @click="closeSidebar">✕</button>
         <ul class="drawer-menu">
           <li>DC INSIDE(개발중)</li>
@@ -19,7 +19,7 @@
         </ul>
       </div>
     </transition>
-    <ul class="menu" v-if="!isTabletOrLess">
+    <ul class="menu" v-if="!isMobile">
       <li>DC INSIDE(개발중)</li>
       <li class="active">ARISE</li>
       <li>NTR(개발중)</li>
@@ -31,15 +31,17 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { useCommonStore } from "../store/common";
+import { useIsMobile } from "../composables/useIsMobile";
+const isMobile = useIsMobile();
 const commonStore = useCommonStore();
 
 const isOpen = ref(false);
 const isTabletOrLess = ref(false);
 
-function handleResize() {
-  isTabletOrLess.value = window.innerWidth <= 1024;
-  if (!isTabletOrLess.value) isOpen.value = false;
-}
+/* function handleResize() {
+  isMobile.value = window.innerWidth <= 768;
+  if (!isMobile.value) isOpen.value = false;
+} */
 
 function toggleSidebar() {
   isOpen.value = !isOpen.value;
@@ -52,11 +54,11 @@ function onInput(e) {
 }
 
 onMounted(() => {
-  handleResize();
-  window.addEventListener("resize", handleResize);
+  /* handleResize();
+  window.addEventListener("resize", handleResize); */
 });
 onUnmounted(() => {
-  window.removeEventListener("resize", handleResize);
+  //window.removeEventListener("resize", handleResize);
 });
 </script>
 
@@ -178,7 +180,7 @@ onUnmounted(() => {
   background: #23232e;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   .sidebar {
     width: 100vw;
     height: 56px;
