@@ -158,18 +158,22 @@ function calcAlert(data) {
 
 const filteredData = computed(() => {
   const keyword = commonStore.searchState.keyword.trim();
-  let data = [...commonStore.tableData];
+  // 1. "기타사항" 필드를 미리 추가
+  let data = commonStore.tableData.map((row) => ({
+    ...row,
+    기타사항: calcAlert(row),
+  }));
 
-  // 2글자 이상일 때만 검색
+  // 2. 2글자 이상일 때만 검색 (기타사항도 포함)
   if (keyword.length >= 2) {
     data = data.filter((row) => Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase()));
   }
 
-  // 정렬
+  // 3. 정렬
   if (!sortKey.value) return data;
   return data.sort((a, b) => {
-    const aVal = sortKey.value === "기타사항" ? calcAlert(a) : a[sortKey.value];
-    const bVal = sortKey.value === "기타사항" ? calcAlert(b) : b[sortKey.value];
+    const aVal = sortKey.value === "기타사항" ? a.기타사항 : a[sortKey.value];
+    const bVal = sortKey.value === "기타사항" ? b.기타사항 : b[sortKey.value];
 
     if (["격노", "Rank"].includes(sortKey.value)) {
       const isEmpty = (v) => v === undefined || v === null || v === "" || v === "#N/A";
@@ -183,10 +187,8 @@ const filteredData = computed(() => {
     // 기타사항(경고) 정렬: 오름차순(▲)이면 '경고'가 위로, 내림차순(▼)이면 '경고' 없는 사람이 위로
     if (sortKey.value === "기타사항") {
       if (sortOrder.value === 1) {
-        // '경고'가 위로
         return (bVal === "경고" ? 1 : 0) - (aVal === "경고" ? 1 : 0);
       } else {
-        // '경고' 없는 사람이 위로
         return (aVal === "경고" ? 1 : 0) - (bVal === "경고" ? 1 : 0);
       }
     }
