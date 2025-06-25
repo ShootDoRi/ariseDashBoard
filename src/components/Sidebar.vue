@@ -12,7 +12,7 @@
       <div class="drawer" v-if="isMobile && isOpen">
         <button class="drawer-close" @click="closeSidebar">✕</button>
         <ul class="drawer-menu">
-          <li>DC INSIDE(개발중)</li>
+          <li>나혼렙갤러리(개발중)</li>
           <li class="active">ARISE</li>
           <li>NTR(개발중)</li>
           <li>Settings(개발중)</li>
@@ -20,7 +20,7 @@
       </div>
     </transition>
     <ul class="menu" v-if="!isMobile">
-      <li>DC INSIDE(개발중)</li>
+      <li>나혼렙갤러리(개발중)</li>
       <li class="active">ARISE</li>
       <li>NTR(개발중)</li>
       <li>Settings(개발중)</li>
