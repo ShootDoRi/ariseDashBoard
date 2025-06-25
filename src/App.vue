@@ -6,9 +6,11 @@
       <router-view />
       <UserModal />
     </div>
+    <Analytics />
   </div>
 </template>
 <script setup>
+import { Analytics } from "@vercel/analytics/vue";
 import Sidebar from "./components/Sidebar.vue";
 //import Topbar from "./components/Topbar.vue";
 import UserModal from "./components/UserModal.vue";

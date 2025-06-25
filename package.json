@@ -10,6 +10,7 @@
     "sheet": "node sheetParser"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.5.0",
     "chart.js": "^4.5.0",
     "dayjs": "^1.11.13",
     "pinia": "^3.0.3",
