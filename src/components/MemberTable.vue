@@ -99,7 +99,14 @@
             </span>
             <span class="sort-icon" v-else>▲▼</span>
           </th>
-          <th class="col-etc">기타사항</th>
+          <th class="col-etc" @click="sortBy('기타사항')">
+            기타사항
+            <span class="sort-icon" v-if="sortKey === '기타사항'">
+              <span :class="{ active: sortOrder === 1 }">▲</span>
+              <span :class="{ active: sortOrder === -1 }">▼</span>
+            </span>
+            <span class="sort-icon" v-else>▲▼</span>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -116,10 +123,7 @@
           <td class="col-raid" v-html="highlight(m['길드레이드_점수'])"></td>
           <td class="col-rage" v-html="highlight(m['격노'])"></td>
           <td class="col-rank" v-html="highlight(m['Rank'])"></td>
-          <td class="col-etc">
-            <button v-if="m.note === 'Check'" class="note-btn">Check</button>
-            <input v-else type="checkbox" />
-          </td>
+          <td class="col-etc" v-html="highlight(calcAlert(m))"></td>
         </tr>
       </tbody>
     </table>
@@ -143,7 +147,15 @@ function sortBy(key) {
   }
 }
 
-// 검색 및 정렬 동시 적용
+function calcAlert(data) {
+  const rage = Number(data["격노"]);
+  const total = Number(data["공헌도합"].replace(/,/g, ""));
+  console.log("Calculating alert for:", data, "Rage:", rage, "Total:", total);
+  if (rage >= 135) return "";
+  if (rage < 135 && total < 2420) return "경고";
+  return "";
+}
+
 const filteredData = computed(() => {
   const keyword = commonStore.searchState.keyword.trim();
   let data = [...commonStore.tableData];
@@ -156,8 +168,9 @@ const filteredData = computed(() => {
   // 정렬
   if (!sortKey.value) return data;
   return data.sort((a, b) => {
-    const aVal = a[sortKey.value];
-    const bVal = b[sortKey.value];
+    const aVal = sortKey.value === "기타사항" ? calcAlert(a) : a[sortKey.value];
+    const bVal = sortKey.value === "기타사항" ? calcAlert(b) : b[sortKey.value];
+
     if (["격노", "Rank"].includes(sortKey.value)) {
       const isEmpty = (v) => v === undefined || v === null || v === "" || v === "#N/A";
       const aEmpty = isEmpty(aVal);
@@ -166,6 +179,16 @@ const filteredData = computed(() => {
       if (!aEmpty && bEmpty) return -1;
       if (aEmpty && bEmpty) return 0;
       return (Number(aVal) - Number(bVal)) * sortOrder.value;
+    }
+    // 기타사항(경고) 정렬: 오름차순(▲)이면 '경고'가 위로, 내림차순(▼)이면 '경고' 없는 사람이 위로
+    if (sortKey.value === "기타사항") {
+      if (sortOrder.value === 1) {
+        // '경고'가 위로
+        return (bVal === "경고" ? 1 : 0) - (aVal === "경고" ? 1 : 0);
+      } else {
+        // '경고' 없는 사람이 위로
+        return (aVal === "경고" ? 1 : 0) - (bVal === "경고" ? 1 : 0);
+      }
     }
     if (!isNaN(Number(aVal)) && !isNaN(Number(bVal))) {
       return (Number(aVal) - Number(bVal)) * sortOrder.value;
