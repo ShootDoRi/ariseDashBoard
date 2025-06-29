@@ -173,7 +173,7 @@ const chartOptions = {
   border-radius: 12px;
   padding: 24px 18px;
   //min-width: 260px;
-  min-width: 80vw;
+  min-width: 300px;
   max-width: 80vw;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
 }
