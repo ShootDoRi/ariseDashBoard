@@ -18,13 +18,14 @@ const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 const COLUMN_MAPPING = {
   순번: 0, // A열
   인게임_닉: 1, // B열
-  직위: 2, // E열
-  배틀클래스: 3, // F열
+  태그: 2,
+  직위: 3, // E열
+  배틀클래스: 4, // F열
   /* 미접속일: 4, // M열
   경고누적: 5, // N열 */
-  길드레이드_점수: 9, // O열
-  격노: 10, // P열
-  Rank: 11,
+  길드레이드_점수: 7, // O열
+  격노: 8, // P열
+  Rank: 9,
 };
 
 async function fetchSheetData() {
@@ -112,10 +113,7 @@ async function fetchSheetData() {
 
     if (cleanData.length === 0) {
       console.log("❌ 유효한 데이터가 없습니다.");
-      console.log(
-        "원본 데이터 샘플:",
-        JSON.stringify(extractedData.slice(0, 3), null, 2)
-      );
+      console.log("원본 데이터 샘플:", JSON.stringify(extractedData.slice(0, 3), null, 2));
       return;
     }
 
@@ -147,11 +145,7 @@ async function fetchSheetData() {
     console.log("\n=== 통계 ===");
     console.log(`총 행 수: ${cleanData.length}`);
     console.log(`추출된 필드: ${Object.keys(COLUMN_MAPPING).join(", ")}`);
-    console.log(
-      `첫 번째 데이터의 원본 행 번호: ${
-        cleanData.length > 0 ? cleanData[0]._originalRowNumber : "N/A"
-      }`
-    );
+    console.log(`첫 번째 데이터의 원본 행 번호: ${cleanData.length > 0 ? cleanData[0]._originalRowNumber : "N/A"}`);
 
     return cleanData;
   } catch (error) {
