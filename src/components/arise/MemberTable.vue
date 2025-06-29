@@ -138,13 +138,20 @@
 <script setup>
 import { ref, onMounted, watch, computed } from "vue";
 import { useAriseStore } from "@/store/arise";
+import { useCommonStore } from "@/store/common";
 import dayjs from "dayjs";
 import sheetDataFlow1 from "@/json/arise/flow/sheet_data_flow.json";
 import sheetDataFlow2 from "@/json/arise/flow/sheet_data_flow2.json";
 import sheetDataArise from "@/json/arise/flow/sheet_data _45주차.json";
-const commonStore = useAriseStore();
 
-const list = ref([...sheetDataFlow1, ...sheetDataFlow2, ...sheetDataArise]);
+const ariseStore = useAriseStore();
+const commonStore = useCommonStore();
+
+const list = ref([
+  ...sheetDataFlow1,
+  ...sheetDataFlow2,
+  ...sheetDataArise.map((itm) => ({ ...itm, "45주차": itm["격노"] })),
+]);
 
 const mergedList = computed(() => {
   const map = new Map();
@@ -178,7 +185,7 @@ function calcAlert(data) {
 
   // 시즌 종료 1일 전 날짜 계산
   const today = dayjs();
-  const warningStartDate = dayjs(commonStore.seasonEndDate).subtract(1, "day");
+  const warningStartDate = dayjs(ariseStore.seasonEndDate).subtract(1, "day");
 
   // 오늘이 경고 시작일 이전이면 경고 표시하지 않음
   if (today.isBefore(warningStartDate)) {
@@ -192,9 +199,9 @@ function calcAlert(data) {
 }
 
 const filteredData = computed(() => {
-  const keyword = commonStore.searchState.keyword.trim();
+  const keyword = ariseStore.searchState.keyword.trim();
   // 1. "기타사항" 필드를 미리 추가
-  let data = commonStore.tableData.map((row) => ({
+  let data = ariseStore.tableData.map((row) => ({
     ...row,
     기타사항: calcAlert(row),
   }));
@@ -238,7 +245,7 @@ const filteredData = computed(() => {
 });
 
 const sortedData_ = computed(() => {
-  const data = [...commonStore.tableData];
+  const data = [...ariseStore.tableData];
   if (!sortKey.value) return data;
   return data.sort((a, b) => {
     const aVal = a[sortKey.value];
@@ -253,7 +260,7 @@ const sortedData_ = computed(() => {
 
 // 하이라이트 함수
 function highlight(text) {
-  const keyword = commonStore.searchState.keyword.trim();
+  const keyword = ariseStore.searchState.keyword.trim();
   if (!keyword || keyword.length < 2 || !text) return text ?? "";
   const re = new RegExp(
     `(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
@@ -263,7 +270,7 @@ function highlight(text) {
 }
 
 watch(
-  () => commonStore.tableData,
+  () => ariseStore.tableData,
   (newData) => {
     console.log("Table data updated:", newData);
   },
@@ -283,7 +290,7 @@ function openUserModal(member) {
 
   const mergedData = mergedList.value.find((m) => m["태그"] === member["태그"]);
   //return;
-  commonStore.modalState.userData = { ...member, ...mergedData };
+  commonStore.modalState.userData = { ...mergedData, ...member };
   commonStore.modalState.isOpen = true;
   console.log("Opening user modal for:", member);
 }

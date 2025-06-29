@@ -16,10 +16,15 @@
       </ul>
       <!-- 선 그래프(가로형) 추가 -->
       <div v-if="weekChart.labels.length" style="margin-top: 24px">
-        <Line
+        <!-- <Line
           :data="chartData"
           :options="chartOptions"
           style="max-width: 400px"
+        /> -->
+        <Line
+          :data="chartData"
+          :options="chartOptions"
+          style="max-width: 700px; min-width: 500px; height: 340px"
         />
       </div>
       <button @click="closeDialog">닫기</button>
@@ -29,7 +34,8 @@
 
 <script setup>
 import { computed } from "vue";
-import { useAriseStore } from "../store/arise";
+//import { useAriseStore } from "../store/arise";
+import { useCommonStore } from "@/store/common";
 import { Line } from "vue-chartjs";
 import {
   Chart,
@@ -52,7 +58,7 @@ Chart.register(
   ChartDataLabels // 플러그인 등록
 );
 
-const commonStore = useAriseStore();
+const commonStore = useCommonStore();
 
 function closeDialog() {
   commonStore.modalState.isOpen = false;
@@ -172,20 +178,24 @@ const chartOptions = {
   color: #fff;
   border-radius: 12px;
   padding: 24px 18px;
-  //min-width: 260px;
   min-width: 300px;
   max-width: 80vw;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+  @media (max-width: 600px) {
+    min-width: 0;
+    max-width: 98vw;
+    padding: 14px 4vw;
+  }
 }
 
 .dialog ul {
   padding-left: 27px;
   margin: 0 0 16px 0;
   list-style: none;
-  text-align: left; // 왼쪽 정렬
+  text-align: left;
 }
 .dialog ul li {
-  text-align: left; // 왼쪽 정렬
+  text-align: left;
   margin-bottom: 6px;
 }
 
@@ -198,5 +208,16 @@ const chartOptions = {
   padding: 6px 18px;
   font-size: 1rem;
   cursor: pointer;
+}
+
+/* 차트도 반응형으로 */
+@media (max-width: 600px) {
+  .dialog .chart-large,
+  .dialog :deep(canvas) {
+    min-width: 0 !important;
+    max-width: 92vw !important;
+    width: 92vw !important;
+    height: 220px !important;
+  }
 }
 </style>

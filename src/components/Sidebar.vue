@@ -81,14 +81,19 @@ const searchKeyword = computed({
 });
 
 const menuList = reactive([
-  { name: "나혼렙갤러리(개발중)", path: "/gallery" },
+  { name: "나혼렙갤러리", path: "/gallery" },
   { name: "ARISE", path: "/arise" },
   { name: "NTR(개발중)", path: "/ntr" },
   { name: "Settings(개발중)", path: "/settings" },
 ]);
 
-function menuActor(path) {
-  router.push(path);
+async function menuActor(path) {
+  try {
+    await router.push(path);
+    isOpen.value = false; // 모바일에서 메뉴 클릭 시 사이드바 닫기
+  } catch (error) {
+    isOpen.value = false; // 모바일에서 메뉴 클릭 시 사이드바 닫기
+  }
 }
 
 console.log("route ==> ", route);

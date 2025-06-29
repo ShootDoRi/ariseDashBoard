@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "arise": "node ariseParser",
     "ariseFlow": "node ariseFlowParser",
-    "gallery": "node galleryParser"
+    "gallery": "node galleryParser",
+    "galleryFlow": "node galleryFlowParser"
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0",

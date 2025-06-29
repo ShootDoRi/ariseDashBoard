@@ -93,18 +93,19 @@
 <script setup>
 import { ref, onMounted, watch, computed } from "vue";
 import { useGalleryStore } from "@/store/gallery";
+import { useCommonStore } from "@/store/common";
 import dayjs from "dayjs";
-import sheetDataFlow1 from "@/json/arise/flow/sheet_data_flow.json";
-import sheetDataFlow2 from "@/json/arise/flow/sheet_data_flow2.json";
-import sheetDataArise from "@/json/arise/flow/sheet_data _45주차.json";
+import sheetDataFlow1 from "@/json/gallery/flow/gallery_flow.json";
+import sheetDataGallery from "@/json/gallery/sheet_data.json";
 const galleryStore = useGalleryStore();
+const commonStore = useCommonStore();
 
-const list = ref([...sheetDataFlow1, ...sheetDataFlow2, ...sheetDataArise]);
+const list = ref([...sheetDataFlow1, ...sheetDataGallery]);
 
 const mergedList = computed(() => {
   const map = new Map();
   list.value.forEach((item) => {
-    const tag = item["태그"];
+    const tag = item["인게임_닉"];
     if (!map.has(tag)) {
       map.set(tag, { ...item });
     } else {
@@ -211,12 +212,14 @@ function openUserModal(member) {
 
   console.log(
     "태그된 멤버 : ",
-    mergedList.value.find((m) => m["태그"] === member["태그"])
+    mergedList.value.find((m) => m["인게임_닉"] === member["인게임_닉"])
   );
 
-  const mergedData = mergedList.value.find((m) => m["태그"] === member["태그"]);
-  galleryStore.modalState.userData = { ...member, ...mergedData };
-  galleryStore.modalState.isOpen = true;
+  const mergedData = mergedList.value.find(
+    (m) => m["인게임_닉"] === member["인게임_닉"]
+  );
+  commonStore.modalState.userData = { ...mergedData, ...member };
+  commonStore.modalState.isOpen = true;
   console.log("Opening user modal for:", member);
 }
 
