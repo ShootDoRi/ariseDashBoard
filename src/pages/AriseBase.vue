@@ -6,7 +6,10 @@
       <!-- 모바일에서만 2개씩 한 줄에 -->
       <div class="stat-row" :class="{ mobile: isMobile }">
         <StatCard title="격노 평균" :value="commonStore.averageRage" />
-        <StatCard title="레이드 참여수" :value="`(50/${commonStore.actualParticipants})`" />
+        <StatCard
+          title="레이드 참여수"
+          :value="`(50/${commonStore.actualParticipants})`"
+        />
       </div>
       <PieCard />
     </div>
@@ -18,11 +21,11 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
-import { useCommonStore } from "../store/common";
-import { useIsMobile } from "../composables/useIsMobile";
-import StatCard from "./StatCard.vue";
-import PieCard from "./PieCard.vue";
-import MemberTable from "./MemberTable.vue";
+import { useCommonStore } from "@/store/common";
+import { useIsMobile } from "@/composables/useIsMobile";
+import StatCard from "@/components/StatCard.vue";
+import PieCard from "@/components/PieCard.vue";
+import MemberTable from "@/components/MemberTable.vue";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 dayjs.extend(duration);

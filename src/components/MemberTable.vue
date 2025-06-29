@@ -110,7 +110,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="m in filteredData" :key="m.no" @click.stop="openUserModal(m)" style="cursor: pointer">
+        <tr
+          v-for="m in filteredData"
+          :key="m.no"
+          @click.stop="openUserModal(m)"
+          style="cursor: pointer"
+        >
           <td class="col-no" v-html="highlight(m['순번'])"></td>
           <td class="col-nick" v-html="highlight(m['인게임_닉'])"></td>
           <td class="col-tag" v-html="highlight(m['태그'])"></td>
@@ -133,6 +138,7 @@
 <script setup>
 import { ref, onMounted, watch, computed } from "vue";
 import { useCommonStore } from "../store/common";
+import dayjs from "dayjs";
 const commonStore = useCommonStore();
 
 const sortKey = ref("");
@@ -150,7 +156,17 @@ function sortBy(key) {
 function calcAlert(data) {
   const rage = Number(data["격노"]);
   const total = Number(data["공헌도합"].replace(/,/g, ""));
-  console.log("Calculating alert for:", data, "Rage:", rage, "Total:", total);
+
+  // 시즌 종료 1일 전 날짜 계산
+  const today = dayjs();
+  const warningStartDate = dayjs(commonStore.seasonEndDate).subtract(1, "day");
+
+  // 오늘이 경고 시작일 이전이면 경고 표시하지 않음
+  if (today.isBefore(warningStartDate)) {
+    return "";
+  }
+
+  // 경고 시작일 이후면 원래 로직대로 경고 표시
   if (rage >= 135) return "";
   if (rage < 135 && total < 2420) return "경고";
   return "";
@@ -166,7 +182,9 @@ const filteredData = computed(() => {
 
   // 2. 2글자 이상일 때만 검색 (기타사항도 포함)
   if (keyword.length >= 2) {
-    data = data.filter((row) => Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase()));
+    data = data.filter((row) =>
+      Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase())
+    );
   }
 
   // 3. 정렬
@@ -176,7 +194,8 @@ const filteredData = computed(() => {
     const bVal = sortKey.value === "기타사항" ? b.기타사항 : b[sortKey.value];
 
     if (["격노", "Rank"].includes(sortKey.value)) {
-      const isEmpty = (v) => v === undefined || v === null || v === "" || v === "#N/A";
+      const isEmpty = (v) =>
+        v === undefined || v === null || v === "" || v === "#N/A";
       const aEmpty = isEmpty(aVal);
       const bEmpty = isEmpty(bVal);
       if (aEmpty && !bEmpty) return 1;
@@ -217,7 +236,10 @@ const sortedData_ = computed(() => {
 function highlight(text) {
   const keyword = commonStore.searchState.keyword.trim();
   if (!keyword || keyword.length < 2 || !text) return text ?? "";
-  const re = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
+  const re = new RegExp(
+    `(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+    "gi"
+  );
   return String(text).replace(re, '<span class="highlight">$1</span>');
 }
 

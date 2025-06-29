@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref, computed, watch, reactive } from "vue";
+import dayjs from "dayjs";
 import sheetData from "../json/sheet_data.json";
 export const useCommonStore = defineStore("common", () => {
   const tableData = reactive([
@@ -11,7 +12,9 @@ export const useCommonStore = defineStore("common", () => {
 
   // 평균 격노 계산 (숫자 변환 및 NaN 방지)
   const averageRage_ = computed(() => {
-    const rageArr = tableData.map((m) => Number(m["격노"])).filter((v) => !isNaN(v));
+    const rageArr = tableData
+      .map((m) => Number(m["격노"]))
+      .filter((v) => !isNaN(v));
     if (rageArr.length === 0) return 0;
     return (rageArr.reduce((a, b) => a + b, 0) / rageArr.length).toFixed(2);
   });
@@ -19,7 +22,9 @@ export const useCommonStore = defineStore("common", () => {
   const averageRage = computed(() => {
     // 격노 값이 실제로 존재하는 데이터만 평균에 포함
     const rageArr = tableData
-      .filter((m) => m["격노"] !== undefined && m["격노"] !== null && m["격노"] !== "")
+      .filter(
+        (m) => m["격노"] !== undefined && m["격노"] !== null && m["격노"] !== ""
+      )
       .map((m) => Number(m["격노"]))
       .filter((v) => !isNaN(v));
     if (rageArr.length === 0) return 0;
@@ -43,13 +48,7 @@ export const useCommonStore = defineStore("common", () => {
     return count;
   });
 
-  watch(
-    () => rageCountData.value,
-    () => {
-      console.log("격노별 개수 집계가 변경되었습니다:", rageCountData.value);
-    },
-    { immediate: true, deep: true }
-  );
+  const seasonEndDate = ref(dayjs("2025-07-03"));
 
   // search
   const searchState = reactive({
@@ -69,5 +68,6 @@ export const useCommonStore = defineStore("common", () => {
     actualParticipants,
     searchState,
     modalState,
+    seasonEndDate,
   };
 });
