@@ -10,7 +10,8 @@
     "arise": "node ariseParser",
     "ariseFlow": "node ariseFlowParser",
     "gallery": "node galleryParser",
-    "galleryFlow": "node galleryFlowParser"
+    "galleryFlow": "node galleryFlowParser",
+    "ntr": "node ntrParser"
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0",

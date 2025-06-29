@@ -54,10 +54,12 @@ import { ref, reactive, computed, onMounted, onUnmounted } from "vue";
 import { useRouter, useRoute } from "vue-router"; // 추가
 import { useAriseStore } from "../store/arise";
 import { useGalleryStore } from "../store/gallery";
+import { useNtrStore } from "../store/ntr"; // NTR 스토어 추가
 import { useIsMobile } from "../composables/useIsMobile";
 const isMobile = useIsMobile();
 const ariseStore = useAriseStore();
 const galleryStore = useGalleryStore();
+const ntrStore = useNtrStore(); // NTR 스토어 인스턴스 생성
 
 const isOpen = ref(false);
 const isTabletOrLess = ref(false);
@@ -70,6 +72,7 @@ const searchKeyword = computed({
     if (route.path.startsWith("/gallery"))
       return galleryStore.searchState.keyword;
     if (route.path.startsWith("/arise")) return ariseStore.searchState.keyword;
+    if (route.path.startsWith("/ntr")) return ntrStore.searchState.keyword; // NTR 경로에 대한 검색 상태
     return "";
   },
   set(val) {
@@ -77,6 +80,9 @@ const searchKeyword = computed({
       galleryStore.searchState.keyword = val;
     else if (route.path.startsWith("/arise"))
       ariseStore.searchState.keyword = val;
+    else if (route.path.startsWith("/ntr"))
+      ntrStore.searchState.keyword = val; // NTR 경로에 대한 검색 상태 설정
+    else return;
   },
 });
 
