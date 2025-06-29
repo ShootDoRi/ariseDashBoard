@@ -2,9 +2,9 @@
   <div class=""></div>
 </template>
 <script setup>
-import sheetDataFlow1 from "@/json/arise/sheet_data_flow.json";
-import sheetDataFlow2 from "@/json/arise/sheet_data_flow2.json";
-import sheetDataArise from "@/json/sheet_data _45주차.json";
+import sheetDataFlow1 from "@/json/arise/flow/sheet_data_flow.json";
+import sheetDataFlow2 from "@/json/arise/flow/sheet_data_flow2.json";
+import sheetDataArise from "@/json/arise/flow/sheet_data _45주차.json";
 import { ref, onMounted } from "vue";
 
 const list = ref([...sheetDataFlow1, ...sheetDataFlow2, ...sheetDataArise]);
