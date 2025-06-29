@@ -11,7 +11,8 @@ const __dirname = dirname(__filename);
 //const SPREADSHEET_ID = "1yWA5vk9WyQJeRscy7gaatfkZXFBerLwI93IlWIN9WZs";
 //1XYHDDyck67QiJ21eSPK0KJzgOWJv3LevmbXeo4ULDI8
 const SPREADSHEET_ID = "1uBiMi8x89d4_4nTd4QGGR4Xv6-D1K8AwZfMxJqYURsQ";
-const RANGE = "A9:P58"; // A9부터 P58까지 (9행부터 데이터)
+//const RANGE = "A9:L58"; // A9부터 P58까지 (9행부터 데이터)
+const RANGE = "5/8~6/4 파흐트나!A9:N58"; // A9부터 P58까지 (9행부터 데이터) 2번째 시트
 const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 
 // 컬럼 매핑 정의 (9번째 행부터 데이터로 처리)
@@ -37,12 +38,14 @@ const COLUMN_MAPPING = {
   갤닉: 3, // D열
   직위: 4, // E열
   배틀클래스: 5, // F열
-  42주차 : 6,
-  변동:7,
-  43주차:8,
-  변동:9,
-  44주차:10
-  변동:11,
+  "38주차": 6,
+  변동_38: 7,
+  "39주차": 8,
+  변동_39: 9,
+  "40주차": 10,
+  변동_40: 11,
+  "41주차": 12,
+  변동_41: 13,
 };
 
 async function fetchSheetData() {
@@ -120,7 +123,7 @@ async function fetchSheetData() {
     }
 
     // src/json 폴더 생성 (없으면 생성)
-    const jsonDir = join(__dirname, "src", "json");
+    const jsonDir = join(__dirname, "src", "json/arise");
     try {
       mkdirSync(jsonDir, { recursive: true });
       console.log("📁 디렉토리 생성/확인 완료:", jsonDir);
@@ -129,7 +132,7 @@ async function fetchSheetData() {
     }
 
     // JSON 파일로 저장
-    const outputFile = join(jsonDir, "sheet_data.json");
+    const outputFile = join(jsonDir, "sheet_data_flow2.json");
     console.log("저장할 파일 경로:", outputFile);
 
     try {

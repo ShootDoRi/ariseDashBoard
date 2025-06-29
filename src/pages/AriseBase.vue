@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useCommonStore } from "@/store/common";
 import { useIsMobile } from "@/composables/useIsMobile";
 import StatCard from "@/components/StatCard.vue";

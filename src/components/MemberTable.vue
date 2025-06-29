@@ -139,7 +139,26 @@
 import { ref, onMounted, watch, computed } from "vue";
 import { useCommonStore } from "../store/common";
 import dayjs from "dayjs";
+import sheetDataFlow1 from "@/json/arise/sheet_data_flow.json";
+import sheetDataFlow2 from "@/json/arise/sheet_data_flow2.json";
+import sheetDataArise from "@/json/sheet_data _45주차.json";
 const commonStore = useCommonStore();
+
+const list = ref([...sheetDataFlow1, ...sheetDataFlow2, ...sheetDataArise]);
+
+const mergedList = computed(() => {
+  const map = new Map();
+  list.value.forEach((item) => {
+    const tag = item["태그"];
+    if (!map.has(tag)) {
+      map.set(tag, { ...item });
+    } else {
+      // 기존 object와 새 object를 병합 (겹치는 키는 새 값으로 덮어쓰기)
+      map.set(tag, { ...map.get(tag), ...item });
+    }
+  });
+  return Array.from(map.values());
+});
 
 const sortKey = ref("");
 const sortOrder = ref(1); // 1: 오름차순, -1: 내림차순
@@ -254,8 +273,17 @@ watch(
 const members = ref([]);
 
 function openUserModal(member) {
-  //commonStore.openUserModal(member);
-  commonStore.modalState.userData = member;
+  console.log("Opening user modal for:", member);
+  console.log("mergedList:", mergedList.value);
+
+  console.log(
+    "태그된 멤버 : ",
+    mergedList.value.find((m) => m["태그"] === member["태그"])
+  );
+
+  const mergedData = mergedList.value.find((m) => m["태그"] === member["태그"]);
+  //return;
+  commonStore.modalState.userData = { ...member, ...mergedData };
   commonStore.modalState.isOpen = true;
   console.log("Opening user modal for:", member);
 }

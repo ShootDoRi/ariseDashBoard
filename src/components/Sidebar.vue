@@ -6,30 +6,52 @@
     </div>
     <!-- 서치바를 사이드바 상단에 추가 -->
     <div class="sidebar-search">
-      <input class="search" placeholder="Search" :value="commonStore.searchState.keyword" @input="onInput" />
+      <input
+        class="search"
+        placeholder="Search"
+        :value="commonStore.searchState.keyword"
+        @input="onInput"
+      />
     </div>
     <transition name="slide">
       <div class="drawer" v-if="isMobile && isOpen">
         <button class="drawer-close" @click="closeSidebar">✕</button>
         <ul class="drawer-menu">
-          <li>나혼렙갤러리(개발중)</li>
+          <!-- <li>나혼렙갤러리(개발중)</li>
           <li class="active">ARISE</li>
           <li>NTR(개발중)</li>
-          <li>Settings(개발중)</li>
+          <li>Settings(개발중)</li> -->
+          <li
+            v-for="menu in menuList"
+            :key="menu.name"
+            @click="menuActor(menu.path)"
+            :class="{ active: route.path === menu.path }"
+          >
+            {{ menu.name }}
+          </li>
         </ul>
       </div>
     </transition>
     <ul class="menu" v-if="!isMobile">
-      <li>나혼렙갤러리(개발중)</li>
+      <!-- <li>나혼렙갤러리(개발중)</li>
       <li class="active">ARISE</li>
       <li>NTR(개발중)</li>
-      <li>Settings(개발중)</li>
+      <li>Settings(개발중)</li> -->
+      <li
+        v-for="menu in menuList"
+        :key="menu.name"
+        @click="menuActor(menu.path)"
+        :class="{ active: route.path === menu.path }"
+      >
+        {{ menu.name }}
+      </li>
     </ul>
   </nav>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, reactive, onMounted, onUnmounted } from "vue";
+import { useRouter, useRoute } from "vue-router"; // 추가
 import { useCommonStore } from "../store/common";
 import { useIsMobile } from "../composables/useIsMobile";
 const isMobile = useIsMobile();
@@ -37,6 +59,21 @@ const commonStore = useCommonStore();
 
 const isOpen = ref(false);
 const isTabletOrLess = ref(false);
+const router = useRouter(); // 추가
+const route = useRoute();
+
+const menuList = reactive([
+  { name: "나혼렙갤러리(개발중)", path: "/gallery" },
+  { name: "ARISE", path: "/arise" },
+  { name: "NTR(개발중)", path: "/ntr" },
+  { name: "Settings(개발중)", path: "/settings" },
+]);
+
+function menuActor(path) {
+  router.push(path);
+}
+
+console.log("route ==> ", route);
 
 /* function handleResize() {
   isMobile.value = window.innerWidth <= 768;
