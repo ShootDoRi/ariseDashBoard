@@ -19,22 +19,6 @@
             </span>
             <span class="sort-icon" v-else>▲▼</span>
           </th>
-          <th class="col-tag" @click="sortBy('태그')">
-            태그
-            <span class="sort-icon" v-if="sortKey === '태그'">
-              <span :class="{ active: sortOrder === 1 }">▲</span>
-              <span :class="{ active: sortOrder === -1 }">▼</span>
-            </span>
-            <span class="sort-icon" v-else>▲▼</span>
-          </th>
-          <th class="col-gal" @click="sortBy('갤닉')">
-            갤닉
-            <span class="sort-icon" v-if="sortKey === '갤닉'">
-              <span :class="{ active: sortOrder === 1 }">▲</span>
-              <span :class="{ active: sortOrder === -1 }">▼</span>
-            </span>
-            <span class="sort-icon" v-else>▲▼</span>
-          </th>
           <th class="col-pos" @click="sortBy('직위')">
             직위
             <span class="sort-icon" v-if="sortKey === '직위'">
@@ -46,30 +30,6 @@
           <th class="col-bc" @click="sortBy('배틀클래스')">
             배클
             <span class="sort-icon" v-if="sortKey === '배틀클래스'">
-              <span :class="{ active: sortOrder === 1 }">▲</span>
-              <span :class="{ active: sortOrder === -1 }">▼</span>
-            </span>
-            <span class="sort-icon" v-else>▲▼</span>
-          </th>
-          <th class="col-boss" @click="sortBy('보스공헌도')">
-            보스공헌도
-            <span class="sort-icon" v-if="sortKey === '보스공헌도'">
-              <span :class="{ active: sortOrder === 1 }">▲</span>
-              <span :class="{ active: sortOrder === -1 }">▼</span>
-            </span>
-            <span class="sort-icon" v-else>▲▼</span>
-          </th>
-          <th class="col-mission" @click="sortBy('미션공헌도')">
-            미션공헌도
-            <span class="sort-icon" v-if="sortKey === '미션공헌도'">
-              <span :class="{ active: sortOrder === 1 }">▲</span>
-              <span :class="{ active: sortOrder === -1 }">▼</span>
-            </span>
-            <span class="sort-icon" v-else>▲▼</span>
-          </th>
-          <th class="col-total" @click="sortBy('공헌도합')">
-            공헌도합
-            <span class="sort-icon" v-if="sortKey === '공헌도합'">
               <span :class="{ active: sortOrder === 1 }">▲</span>
               <span :class="{ active: sortOrder === -1 }">▼</span>
             </span>
@@ -118,13 +78,8 @@
         >
           <td class="col-no" v-html="highlight(m['순번'])"></td>
           <td class="col-nick" v-html="highlight(m['인게임_닉'])"></td>
-          <td class="col-tag" v-html="highlight(m['태그'])"></td>
-          <td class="col-gal" v-html="highlight(m['갤닉'])"></td>
           <td class="col-pos" v-html="highlight(m['직위'])"></td>
           <td class="col-bc" v-html="highlight(m['배틀클래스'])"></td>
-          <td class="col-boss" v-html="highlight(m['보스공헌도'])"></td>
-          <td class="col-mission" v-html="highlight(m['미션공헌도'])"></td>
-          <td class="col-total" v-html="highlight(m['공헌도합'])"></td>
           <td class="col-raid" v-html="highlight(m['길드레이드_점수'])"></td>
           <td class="col-rage" v-html="highlight(m['격노'])"></td>
           <td class="col-rank" v-html="highlight(m['Rank'])"></td>
@@ -137,12 +92,12 @@
 
 <script setup>
 import { ref, onMounted, watch, computed } from "vue";
-import { useCommonStore } from "../store/common";
+import { useGalleryStore } from "@/store/gallery";
 import dayjs from "dayjs";
-import sheetDataFlow1 from "@/json/arise/sheet_data_flow.json";
-import sheetDataFlow2 from "@/json/arise/sheet_data_flow2.json";
-import sheetDataArise from "@/json/sheet_data _45주차.json";
-const commonStore = useCommonStore();
+import sheetDataFlow1 from "@/json/arise/flow/sheet_data_flow.json";
+import sheetDataFlow2 from "@/json/arise/flow/sheet_data_flow2.json";
+import sheetDataArise from "@/json/arise/flow/sheet_data _45주차.json";
+const galleryStore = useGalleryStore();
 
 const list = ref([...sheetDataFlow1, ...sheetDataFlow2, ...sheetDataArise]);
 
@@ -153,7 +108,6 @@ const mergedList = computed(() => {
     if (!map.has(tag)) {
       map.set(tag, { ...item });
     } else {
-      // 기존 object와 새 object를 병합 (겹치는 키는 새 값으로 덮어쓰기)
       map.set(tag, { ...map.get(tag), ...item });
     }
   });
@@ -161,11 +115,11 @@ const mergedList = computed(() => {
 });
 
 const sortKey = ref("");
-const sortOrder = ref(1); // 1: 오름차순, -1: 내림차순
+const sortOrder = ref(1);
 
 function sortBy(key) {
   if (sortKey.value === key) {
-    sortOrder.value = -sortOrder.value; // 같은 키 클릭 시 정렬 방향 반전
+    sortOrder.value = -sortOrder.value;
   } else {
     sortKey.value = key;
     sortOrder.value = 1;
@@ -174,39 +128,33 @@ function sortBy(key) {
 
 function calcAlert(data) {
   const rage = Number(data["격노"]);
-  const total = Number(data["공헌도합"].replace(/,/g, ""));
+  const total = Number(data["공헌도합"]?.replace(/,/g, ""));
 
-  // 시즌 종료 1일 전 날짜 계산
   const today = dayjs();
-  const warningStartDate = dayjs(commonStore.seasonEndDate).subtract(1, "day");
+  const warningStartDate = dayjs(galleryStore.seasonEndDate).subtract(1, "day");
 
-  // 오늘이 경고 시작일 이전이면 경고 표시하지 않음
   if (today.isBefore(warningStartDate)) {
     return "";
   }
 
-  // 경고 시작일 이후면 원래 로직대로 경고 표시
   if (rage >= 135) return "";
   if (rage < 135 && total < 2420) return "경고";
   return "";
 }
 
 const filteredData = computed(() => {
-  const keyword = commonStore.searchState.keyword.trim();
-  // 1. "기타사항" 필드를 미리 추가
-  let data = commonStore.tableData.map((row) => ({
+  const keyword = galleryStore.searchState.keyword.trim();
+  let data = galleryStore.tableData.map((row) => ({
     ...row,
     기타사항: calcAlert(row),
   }));
 
-  // 2. 2글자 이상일 때만 검색 (기타사항도 포함)
   if (keyword.length >= 2) {
     data = data.filter((row) =>
       Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase())
     );
   }
 
-  // 3. 정렬
   if (!sortKey.value) return data;
   return data.sort((a, b) => {
     const aVal = sortKey.value === "기타사항" ? a.기타사항 : a[sortKey.value];
@@ -222,7 +170,6 @@ const filteredData = computed(() => {
       if (aEmpty && bEmpty) return 0;
       return (Number(aVal) - Number(bVal)) * sortOrder.value;
     }
-    // 기타사항(경고) 정렬: 오름차순(▲)이면 '경고'가 위로, 내림차순(▼)이면 '경고' 없는 사람이 위로
     if (sortKey.value === "기타사항") {
       if (sortOrder.value === 1) {
         return (bVal === "경고" ? 1 : 0) - (aVal === "경고" ? 1 : 0);
@@ -237,23 +184,9 @@ const filteredData = computed(() => {
   });
 });
 
-const sortedData_ = computed(() => {
-  const data = [...commonStore.tableData];
-  if (!sortKey.value) return data;
-  return data.sort((a, b) => {
-    const aVal = a[sortKey.value];
-    const bVal = b[sortKey.value];
-    // 숫자 비교 우선, 아니면 문자열 비교
-    if (!isNaN(Number(aVal)) && !isNaN(Number(bVal))) {
-      return (Number(aVal) - Number(bVal)) * sortOrder.value;
-    }
-    return String(aVal).localeCompare(String(bVal), "ko") * sortOrder.value;
-  });
-});
-
 // 하이라이트 함수
 function highlight(text) {
-  const keyword = commonStore.searchState.keyword.trim();
+  const keyword = galleryStore.searchState.keyword.trim();
   if (!keyword || keyword.length < 2 || !text) return text ?? "";
   const re = new RegExp(
     `(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
@@ -263,7 +196,7 @@ function highlight(text) {
 }
 
 watch(
-  () => commonStore.tableData,
+  () => galleryStore.tableData,
   (newData) => {
     console.log("Table data updated:", newData);
   },
@@ -282,33 +215,19 @@ function openUserModal(member) {
   );
 
   const mergedData = mergedList.value.find((m) => m["태그"] === member["태그"]);
-  //return;
-  commonStore.modalState.userData = { ...member, ...mergedData };
-  commonStore.modalState.isOpen = true;
+  galleryStore.modalState.userData = { ...member, ...mergedData };
+  galleryStore.modalState.isOpen = true;
   console.log("Opening user modal for:", member);
 }
 
 onMounted(() => {
-  /* members.value = sheetData.map((itm) => {
-    // "기타사항"과 "_originalRowNumber" 키를 제외한 새 객체 생성
-    const { 기타사항: omit1, _originalRowNumber: omit2, ...rest } = itm;
-    return rest;
-  });
-  console.log("Members loaded:", members.value); */
+  // 필요 없는 데이터 로딩 코드 삭제
 });
-
-/* const members = [
-  { no: 1, nick: "Lily", tag: "19VGYAQ", position: "CM", level: 70, boss: 790, total: "2.660", score: "42.111", kills: 17, note: "Check" },
-  { no: 2, nick: "Raiju", tag: "JTPV3DQ", position: "Vice CM", level: 70, boss: 835, total: "2.705", score: "56.926", kills: 1, note: "Check" },
-  { no: 3, nick: "Raiju", tag: "JTPV3DQ", position: "CM", level: 70, boss: 835, total: "2.705", score: "56.926.9", kills: 17, note: "Check" },
-  { no: 4, nick: "Ghech", tag: "", position: "", level: 70, boss: "2.660", total: "", score: "42.111.426", kills: 1, note: "" },
-]; */
 </script>
 
 <style scoped>
 .table-wrap {
   background: #23232e;
-  /* background: #4b4b4c; */
   border-radius: 14px;
   padding: 0 0 0 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -316,9 +235,7 @@ onMounted(() => {
 .member-table {
   width: 100%;
   border-collapse: collapse;
-  /* background: #23232e; */
   background: #4b4b4c;
-  /* color: #fff; */
   color: #bbb;
   border-radius: 14px;
   overflow: hidden;
@@ -331,9 +248,7 @@ onMounted(() => {
   font-size: 1.01rem;
 }
 .member-table th {
-  /* background: #23232e; */
   background: #4b4b4c;
-  /* color: #bfc2e2; */
   color: #bbb;
   font-weight: 600;
 }
@@ -349,8 +264,6 @@ onMounted(() => {
   font-size: 0.98rem;
   cursor: pointer;
 }
-
-/* ...기존 스타일... */
 :deep(tbody) {
   td {
     span.highlight {
@@ -361,7 +274,6 @@ onMounted(() => {
     }
   }
 }
-
 @media (max-width: 768px) {
   .table-wrap {
     overflow-x: auto;
@@ -371,7 +283,7 @@ onMounted(() => {
     min-width: unset;
     width: 100%;
     font-size: 0.95rem;
-    table-layout: fixed; /* 각 컬럼이 균등하게 분배됨 */
+    table-layout: fixed;
   }
   .member-table th,
   .member-table td {
@@ -382,27 +294,20 @@ onMounted(() => {
   }
   /* 숨길 컬럼 */
   .col-nick,
-  .col-tag,
   .col-pos,
   .col-bc,
-  .col-boss,
-  .col-mission,
-  .col-total,
   .col-raid,
   .col-etc {
     display: none;
   }
-  /* 보일 컬럼: 순번, 갤닉, 격노, Rank */
+  /* 보일 컬럼: 순번, 격노, Rank */
   .col-no,
-  .col-gal,
   .col-rage,
   .col-rank {
     display: table-cell;
-    width: 25%; /* 4개 컬럼이 균등하게 분배 */
+    width: 33.33%;
   }
 }
-
-/* ...기존 스타일... */
 .sort-icon {
   font-size: 0.85em;
   margin-left: 4px;

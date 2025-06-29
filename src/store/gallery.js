@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { ref, computed, watch, reactive } from "vue";
 import dayjs from "dayjs";
-import sheetData from "../json/sheet_data.json";
-export const useCommonStore = defineStore("common", () => {
+import sheetData from "@/json/gallery/sheet_data.json";
+export const useGalleryStore = defineStore("gallery", () => {
   const tableData = reactive([
     ...sheetData.map((itm) => {
       const { 기타사항: omit1, _originalRowNumber: omit2, ...rest } = itm;

@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "arise": "node ariseParser",
-    "ariseFlow": "node ariseFlowParser"
+    "ariseFlow": "node ariseFlowParser",
+    "gallery": "node galleryParser"
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0",

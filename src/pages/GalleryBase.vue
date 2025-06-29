@@ -5,8 +5,11 @@
       <StatCard title="남은 시간" :value="remainingTime" />
       <!-- 모바일에서만 2개씩 한 줄에 -->
       <div class="stat-row" :class="{ mobile: isMobile }">
-        <StatCard title="격노 평균" :value="commonStore.averageRage" />
-        <StatCard title="레이드 참여수" :value="`(50/${commonStore.actualParticipants})`" />
+        <StatCard title="격노 평균" :value="galleryStore.averageRage" />
+        <StatCard
+          title="레이드 참여수"
+          :value="`(50/${galleryStore.actualParticipants})`"
+        />
       </div>
       <PieCard />
     </div>
@@ -17,17 +20,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
-import { useCommonStore } from "../store/common";
-import { useIsMobile } from "../composables/useIsMobile";
-import StatCard from "./StatCard.vue";
-import PieCard from "./PieCard.vue";
-import MemberTable from "./MemberTable.vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
+import { useGalleryStore } from "@/store/gallery";
+import { useIsMobile } from "@/composables/useIsMobile";
+import StatCard from "@/components/gallery/StatCard.vue";
+import PieCard from "@/components/gallery/PieCard.vue";
+import MemberTable from "@/components/gallery/MemberTable.vue";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 dayjs.extend(duration);
 
-const commonStore = useCommonStore();
+const galleryStore = useGalleryStore();
 const isMobile = useIsMobile();
 
 const endDateForm = dayjs("2025-07-03T08:30:00").format("MM/DD HH:mm");

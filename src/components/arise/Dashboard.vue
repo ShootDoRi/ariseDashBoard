@@ -20,12 +20,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
-import { useAriseStore } from "@/store/arise";
-import { useIsMobile } from "@/composables/useIsMobile";
+import { ref, onMounted, onUnmounted } from "vue";
+import { useAriseStore } from "../store/arise";
+import { useIsMobile } from "../composables/useIsMobile";
 import StatCard from "@/components/arise/StatCard.vue";
 import PieCard from "@/components/arise/PieCard.vue";
-import MemberTable from "@/components/arise/MemberTable.vue";
+import MemberTable from "@/components/MemberTable.vue";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 dayjs.extend(duration);

@@ -29,7 +29,7 @@
 
 <script setup>
 import { computed } from "vue";
-import { useCommonStore } from "../store/common";
+import { useAriseStore } from "../store/arise";
 import { Line } from "vue-chartjs";
 import {
   Chart,
@@ -52,7 +52,7 @@ Chart.register(
   ChartDataLabels // 플러그인 등록
 );
 
-const commonStore = useCommonStore();
+const commonStore = useAriseStore();
 
 function closeDialog() {
   commonStore.modalState.isOpen = false;

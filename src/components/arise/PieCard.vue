@@ -3,7 +3,9 @@
     <div class="pie-title">격노 구간</div>
     <div class="container">
       <div class="pie-legend">
-        <div v-for="(itm, idx) in pieData.labels" :key="`data-${idx}`"><span :class="`dot dot${idx + 1}`" />{{ itm }}</div>
+        <div v-for="(itm, idx) in pieData.labels" :key="`data-${idx}`">
+          <span :class="`dot dot${idx + 1}`" />{{ itm }}
+        </div>
         <!-- <div><span class="dot dot1"></span>0-199</div>
         <div><span class="dot dot2"></span>200-249</div>
         <div><span class="dot dot3"></span>250-299</div>
@@ -19,9 +21,9 @@
 <script setup>
 import { computed, watch } from "vue";
 import PieChart from "./PieChart.vue";
-import { useCommonStore } from "../store/common";
+import { useAriseStore } from "@/store/arise";
 
-const commonStore = useCommonStore();
+const ariseStore = useAriseStore();
 /* const pieData = {
   labels: ["0-199", "200-249", "250-299", "300+"],
   datasets: [
@@ -34,7 +36,7 @@ const commonStore = useCommonStore();
 
 // 격노 값의 최소/최대에 따라 4구간으로 자동 분할
 const pieData = computed(() => {
-  const rageKeys = Object.keys(commonStore.rageCountData)
+  const rageKeys = Object.keys(ariseStore.rageCountData)
     .map(Number)
     .filter((v) => !isNaN(v))
     .sort((a, b) => a - b);
@@ -63,7 +65,7 @@ const pieData = computed(() => {
 
   // 각 rage 값을 해당 구간에 카운트
   rageKeys.forEach((rage) => {
-    const count = commonStore.rageCountData[rage];
+    const count = ariseStore.rageCountData[rage];
     for (let i = 0; i < bins.length; i++) {
       if (rage >= bins[i].start && rage <= bins[i].end) {
         bins[i].count += count;

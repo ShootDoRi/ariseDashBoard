@@ -1,12 +1,17 @@
 <template>
   <header class="topbar">
-    <input class="search" placeholder="Search" :value="commonStore.searchState.keyword" @input="onInput" />
+    <input
+      class="search"
+      placeholder="Search"
+      :value="commonStore.searchState.keyword"
+      @input="onInput"
+    />
   </header>
 </template>
 
 <script setup>
-import { useCommonStore } from "../store/common";
-const commonStore = useCommonStore();
+import { useAriseStore } from "../store/arise";
+const commonStore = useAriseStore();
 
 function onInput(e) {
   commonStore.searchState.keyword = e.target.value;

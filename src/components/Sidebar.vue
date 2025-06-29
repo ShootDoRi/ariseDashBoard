@@ -9,7 +9,7 @@
       <input
         class="search"
         placeholder="Search"
-        :value="commonStore.searchState.keyword"
+        :value="searchKeyword"
         @input="onInput"
       />
     </div>
@@ -50,17 +50,35 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted } from "vue";
+import { ref, reactive, computed, onMounted, onUnmounted } from "vue";
 import { useRouter, useRoute } from "vue-router"; // 추가
-import { useCommonStore } from "../store/common";
+import { useAriseStore } from "../store/arise";
+import { useGalleryStore } from "../store/gallery";
 import { useIsMobile } from "../composables/useIsMobile";
 const isMobile = useIsMobile();
-const commonStore = useCommonStore();
+const ariseStore = useAriseStore();
+const galleryStore = useGalleryStore();
 
 const isOpen = ref(false);
 const isTabletOrLess = ref(false);
 const router = useRouter(); // 추가
 const route = useRoute();
+
+// 현재 경로에 따라 검색 상태를 반환
+const searchKeyword = computed({
+  get() {
+    if (route.path.startsWith("/gallery"))
+      return galleryStore.searchState.keyword;
+    if (route.path.startsWith("/arise")) return ariseStore.searchState.keyword;
+    return "";
+  },
+  set(val) {
+    if (route.path.startsWith("/gallery"))
+      galleryStore.searchState.keyword = val;
+    else if (route.path.startsWith("/arise"))
+      ariseStore.searchState.keyword = val;
+  },
+});
 
 const menuList = reactive([
   { name: "나혼렙갤러리(개발중)", path: "/gallery" },
@@ -87,7 +105,7 @@ function closeSidebar() {
   isOpen.value = false;
 }
 function onInput(e) {
-  commonStore.searchState.keyword = e.target.value;
+  searchKeyword.value = e.target.value;
 }
 
 onMounted(() => {
@@ -112,6 +130,9 @@ onUnmounted(() => {
   position: relative;
   transition: width 0.2s;
   z-index: 100;
+}
+li {
+  cursor: pointer;
 }
 .logo {
   font-size: 1.5rem;

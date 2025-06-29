@@ -10,25 +10,21 @@ const __dirname = dirname(__filename);
 // 구글 시트 정보
 //const SPREADSHEET_ID = "1yWA5vk9WyQJeRscy7gaatfkZXFBerLwI93IlWIN9WZs";
 //1XYHDDyck67QiJ21eSPK0KJzgOWJv3LevmbXeo4ULDI8
-const SPREADSHEET_ID = "1XYHDDyck67QiJ21eSPK0KJzgOWJv3LevmbXeo4ULDI8";
-const RANGE = "A9:P58"; // A9부터 P58까지 (9행부터 데이터)
+const SPREADSHEET_ID = "1gcb_DijTMNhS6KcGAVSk5YYNVnCksanlfuiGV_X--DM";
+const RANGE = "나갤 공헌도!A6:L55"; // A9부터 P58까지 (9행부터 데이터)
 const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 
 // 컬럼 매핑 정의 (9번째 행부터 데이터로 처리)
 const COLUMN_MAPPING = {
   순번: 0, // A열
   인게임_닉: 1, // B열
-  태그: 2, // C열
-  갤닉: 3, // D열
-  직위: 4, // E열
-  배틀클래스: 5, // F열
-  보스공헌도: 9, // J열
-  미션공헌도: 10, // K열
-  공헌도합: 11, // L열
-  길드레이드_점수: 12, // M열
-  격노: 13, // N열
-  Rank: 14, // O열
-  기타사항: 15, // P열
+  직위: 2, // E열
+  배틀클래스: 3, // F열
+  /* 미접속일: 4, // M열
+  경고누적: 5, // N열 */
+  길드레이드_점수: 9, // O열
+  격노: 10, // P열
+  Rank: 11
 };
 
 async function fetchSheetData() {
@@ -98,12 +94,15 @@ async function fetchSheetData() {
 
     if (cleanData.length === 0) {
       console.log("❌ 유효한 데이터가 없습니다.");
-      console.log("원본 데이터 샘플:", JSON.stringify(extractedData.slice(0, 3), null, 2));
+      console.log(
+        "원본 데이터 샘플:",
+        JSON.stringify(extractedData.slice(0, 3), null, 2)
+      );
       return;
     }
 
     // src/json 폴더 생성 (없으면 생성)
-    const jsonDir = join(__dirname, "src", "json");
+    const jsonDir = join(__dirname, "src", "json/gallery");
     try {
       mkdirSync(jsonDir, { recursive: true });
       console.log("📁 디렉토리 생성/확인 완료:", jsonDir);
@@ -130,7 +129,11 @@ async function fetchSheetData() {
     console.log("\n=== 통계 ===");
     console.log(`총 행 수: ${cleanData.length}`);
     console.log(`추출된 필드: ${Object.keys(COLUMN_MAPPING).join(", ")}`);
-    console.log(`첫 번째 데이터의 원본 행 번호: ${cleanData.length > 0 ? cleanData[0]._originalRowNumber : "N/A"}`);
+    console.log(
+      `첫 번째 데이터의 원본 행 번호: ${
+        cleanData.length > 0 ? cleanData[0]._originalRowNumber : "N/A"
+      }`
+    );
 
     return cleanData;
   } catch (error) {
