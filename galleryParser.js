@@ -24,7 +24,7 @@ const COLUMN_MAPPING = {
   경고누적: 5, // N열 */
   길드레이드_점수: 9, // O열
   격노: 10, // P열
-  Rank: 11
+  Rank: 11,
 };
 
 async function fetchSheetData() {
@@ -69,12 +69,30 @@ async function fetchSheetData() {
     console.log(`데이터 행 수: ${dataRows.length}`);
 
     // 지정된 컬럼들만 추출하여 JSON 객체로 변환
-    const extractedData = dataRows.map((row, index) => {
+    /* const extractedData = dataRows.map((row, index) => {
       const obj = {};
 
       // 각 필드별로 지정된 컬럼에서 데이터 추출
       Object.entries(COLUMN_MAPPING).forEach(([fieldName, columnIndex]) => {
         obj[fieldName] = row[columnIndex] || "";
+      });
+
+      // 원본 행 번호 추가 (9번째 행부터 시작)
+      obj._originalRowNumber = 9 + index;
+
+      return obj;
+    }); */
+    const extractedData = dataRows.map((row, index) => {
+      const obj = {};
+
+      // 각 필드별로 지정된 컬럼에서 데이터 추출
+      Object.entries(COLUMN_MAPPING).forEach(([fieldName, columnIndex]) => {
+        let value = row[columnIndex] || "";
+        // 인게임_닉이 🇬🇴🇷🇦🇳🇮 이면 GORANI로 치환
+        if (fieldName === "인게임_닉" && value === "🇬🇴🇷🇦🇳🇮") {
+          value = "GORANI";
+        }
+        obj[fieldName] = value;
       });
 
       // 원본 행 번호 추가 (9번째 행부터 시작)
