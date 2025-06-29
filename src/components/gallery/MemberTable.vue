@@ -293,7 +293,7 @@ onMounted(() => {
     word-break: break-all;
   }
   /* 숨길 컬럼 */
-  .col-nick,
+
   .col-pos,
   .col-bc,
   .col-raid,
@@ -301,6 +301,7 @@ onMounted(() => {
     display: none;
   }
   /* 보일 컬럼: 순번, 격노, Rank */
+  .col-nick,
   .col-no,
   .col-rage,
   .col-rank {
