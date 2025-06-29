@@ -103,7 +103,7 @@ async function fetchSheetData() {
     }
 
     // src/json 폴더 생성 (없으면 생성)
-    const jsonDir = join(__dirname, "src", "json");
+    const jsonDir = join(__dirname, "src", "json/arise");
     try {
       mkdirSync(jsonDir, { recursive: true });
       console.log("📁 디렉토리 생성/확인 완료:", jsonDir);
