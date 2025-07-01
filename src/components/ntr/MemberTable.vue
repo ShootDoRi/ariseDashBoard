@@ -110,12 +110,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="m in filteredData"
-          :key="m.no"
-          @click.stop="openUserModal(m)"
-          style="cursor: pointer"
-        >
+        <tr v-for="m in filteredData" :key="m.no" @click.stop="openUserModal(m)" style="cursor: pointer">
           <td class="col-no" v-html="highlight(m['순번'])"></td>
           <td class="col-nick" v-html="highlight(m['인게임_닉'])"></td>
           <td class="col-tag" v-html="highlight(m['태그'])"></td>
@@ -140,12 +135,13 @@ import { ref, onMounted, watch, computed } from "vue";
 import { useNtrStore } from "@/store/ntr";
 import { useCommonStore } from "@/store/common";
 import dayjs from "dayjs";
-import sheetData from "@/json/ntr/ntr_merged.json";
+import mergedData from "@/json/ntr/ntr_merged.json";
+import sheetData from "@/json/ntr/sheet_data.json";
 
 const ntrStore = useNtrStore();
 const commonStore = useCommonStore();
 
-const list = ref([...sheetData]);
+const list = ref([...mergedData]);
 
 const mergedList = computed(() => {
   const map = new Map();
@@ -195,16 +191,18 @@ function sortBy(key) {
 const filteredData = computed(() => {
   const keyword = ntrStore.searchState.keyword.trim();
   // 1. "기타사항" 필드를 미리 추가
-  let data = ntrStore.tableData.map((row) => ({
+  /* let data = ntrStore.flowData.map((row) => ({
+    ...row,
+    //기타사항: calcAlert(row),
+  })); */
+  let data = ntrStore.thisWeekData.map((row) => ({
     ...row,
     //기타사항: calcAlert(row),
   }));
 
   // 2. 2글자 이상일 때만 검색 (기타사항도 포함)
   if (keyword.length >= 2) {
-    data = data.filter((row) =>
-      Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase())
-    );
+    data = data.filter((row) => Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase()));
   }
 
   // 3. 정렬
@@ -214,8 +212,7 @@ const filteredData = computed(() => {
     const bVal = sortKey.value === "기타사항" ? b.기타사항 : b[sortKey.value];
 
     if (["격노", "Rank"].includes(sortKey.value)) {
-      const isEmpty = (v) =>
-        v === undefined || v === null || v === "" || v === "#N/A";
+      const isEmpty = (v) => v === undefined || v === null || v === "" || v === "#N/A";
       const aEmpty = isEmpty(aVal);
       const bEmpty = isEmpty(bVal);
       if (aEmpty && !bEmpty) return 1;
@@ -239,7 +236,7 @@ const filteredData = computed(() => {
 });
 
 const sortedData_ = computed(() => {
-  const data = [...ntrStore.tableData];
+  const data = [...ntrStore.flowData];
   if (!sortKey.value) return data;
   return data.sort((a, b) => {
     const aVal = a[sortKey.value];
@@ -256,15 +253,12 @@ const sortedData_ = computed(() => {
 function highlight(text) {
   const keyword = ntrStore.searchState.keyword.trim();
   if (!keyword || keyword.length < 2 || !text) return text ?? "";
-  const re = new RegExp(
-    `(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
-    "gi"
-  );
+  const re = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
   return String(text).replace(re, '<span class="highlight">$1</span>');
 }
 
 watch(
-  () => ntrStore.tableData,
+  () => ntrStore.flowData,
   (newData) => {
     console.log("Table data updated:", newData);
   },
@@ -290,7 +284,7 @@ function openUserModal(member) {
 }
 
 onMounted(() => {
-  /* members.value = sheetData.map((itm) => {
+  /* members.value = mergedData.map((itm) => {
     // "기타사항"과 "_originalRowNumber" 키를 제외한 새 객체 생성
     const { 기타사항: omit1, _originalRowNumber: omit2, ...rest } = itm;
     return rest;
