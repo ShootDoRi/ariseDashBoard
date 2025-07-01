@@ -14,6 +14,9 @@ export default defineConfig({
     port: 8080,
   },
   esbuild: {
-    drop: process.env.NODE_ENV === "production" ? ["console"] : [],
+    drop: process.env.NODE_ENV === "production" ? ["console", "debugger"] : [],
+  },
+  build: {
+    minify: "esbuild", // terser 대신 esbuild 사용
   },
 });
