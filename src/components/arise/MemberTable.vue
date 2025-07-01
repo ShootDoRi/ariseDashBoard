@@ -115,6 +115,7 @@
           :key="m.no"
           @click.stop="openUserModal(m)"
           style="cursor: pointer"
+          :class="getRankClass(m.Rank)"
         >
           <td class="col-no" v-html="highlight(m['순번'])"></td>
           <td class="col-nick" v-html="highlight(m['인게임_닉'])"></td>
@@ -295,6 +296,14 @@ function openUserModal(member) {
   console.log("Opening user modal for:", member);
 }
 
+function getRankClass(rank) {
+  const rankNum = Number(rank);
+  if (rankNum === 1) return "rank-1";
+  if (rankNum === 2) return "rank-2";
+  if (rankNum === 3) return "rank-3";
+  return "";
+}
+
 onMounted(() => {
   /* members.value = sheetData.map((itm) => {
     // "기타사항"과 "_originalRowNumber" 키를 제외한 새 객체 생성
@@ -313,6 +322,19 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.rank-1 {
+  background-color: rgba(255, 183, 77, 0.25); /* 더 밝은 오렌지색 */
+  border-left: 3px solid #ffb74d;
+}
+.rank-2 {
+  background-color: rgba(187, 134, 252, 0.25); /* 더 밝은 보라색 */
+  border-left: 3px solid #bb86fc;
+}
+.rank-3 {
+  background-color: rgba(100, 255, 218, 0.25); /* 더 밝은 청록색 */
+  border-left: 3px solid #64ffda;
+}
+
 .table-wrap {
   background: #23232e;
   /* background: #4b4b4c; */

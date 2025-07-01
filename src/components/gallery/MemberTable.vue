@@ -70,7 +70,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="m in filteredData" :key="m.no" @click.stop="openUserModal(m)" style="cursor: pointer">
+        <tr
+          v-for="m in filteredData"
+          :key="m.no"
+          @click.stop="openUserModal(m)"
+          style="cursor: pointer"
+          :class="getRankClass(m.Rank)"
+        >
           <td class="col-no" v-html="highlight(m['순번'])"></td>
           <td class="col-nick" v-html="highlight(m['인게임_닉'])"></td>
           <td class="col-pos" v-html="highlight(m['직위'])"></td>
@@ -146,7 +152,9 @@ const filteredData = computed(() => {
   }));
 
   if (keyword.length >= 2) {
-    data = data.filter((row) => Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase()));
+    data = data.filter((row) =>
+      Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase())
+    );
   }
 
   if (!sortKey.value) return data;
@@ -155,7 +163,8 @@ const filteredData = computed(() => {
     const bVal = sortKey.value === "기타사항" ? b.기타사항 : b[sortKey.value];
 
     if (["격노", "Rank"].includes(sortKey.value)) {
-      const isEmpty = (v) => v === undefined || v === null || v === "" || v === "#N/A";
+      const isEmpty = (v) =>
+        v === undefined || v === null || v === "" || v === "#N/A";
       const aEmpty = isEmpty(aVal);
       const bEmpty = isEmpty(bVal);
       if (aEmpty && !bEmpty) return 1;
@@ -181,7 +190,10 @@ const filteredData = computed(() => {
 function highlight(text) {
   const keyword = galleryStore.searchState.keyword.trim();
   if (!keyword || keyword.length < 2 || !text) return text ?? "";
-  const re = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
+  const re = new RegExp(
+    `(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+    "gi"
+  );
   return String(text).replace(re, '<span class="highlight">$1</span>');
 }
 
@@ -204,10 +216,20 @@ function openUserModal(member) {
     mergedList.value.find((m) => m["인게임_닉"] === member["인게임_닉"])
   );
 
-  const mergedData = mergedList.value.find((m) => m["인게임_닉"] === member["인게임_닉"]);
+  const mergedData = mergedList.value.find(
+    (m) => m["인게임_닉"] === member["인게임_닉"]
+  );
   commonStore.modalState.userData = { ...mergedData, ...member };
   commonStore.modalState.isOpen = true;
   console.log("Opening user modal for:", member);
+}
+
+function getRankClass(rank) {
+  const rankNum = Number(rank);
+  if (rankNum === 1) return "rank-1";
+  if (rankNum === 2) return "rank-2";
+  if (rankNum === 3) return "rank-3";
+  return "";
 }
 
 onMounted(() => {
@@ -216,6 +238,19 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.rank-1 {
+  background-color: rgba(255, 183, 77, 0.25); /* 더 밝은 오렌지색 */
+  border-left: 3px solid #ffb74d;
+}
+.rank-2 {
+  background-color: rgba(187, 134, 252, 0.25); /* 더 밝은 보라색 */
+  border-left: 3px solid #bb86fc;
+}
+.rank-3 {
+  background-color: rgba(100, 255, 218, 0.25); /* 더 밝은 청록색 */
+  border-left: 3px solid #64ffda;
+}
+
 .table-wrap {
   background: #23232e;
   border-radius: 14px;

@@ -110,7 +110,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="m in filteredData" :key="m.no" @click.stop="openUserModal(m)" style="cursor: pointer">
+        <tr
+          v-for="m in filteredData"
+          :key="m.no"
+          @click.stop="openUserModal(m)"
+          style="cursor: pointer"
+          :class="getRankClass(m.Rank)"
+        >
           <td class="col-no" v-html="highlight(m['순번'])"></td>
           <td class="col-nick" v-html="highlight(m['인게임_닉'])"></td>
           <td class="col-tag" v-html="highlight(m['태그'])"></td>
@@ -202,7 +208,9 @@ const filteredData = computed(() => {
 
   // 2. 2글자 이상일 때만 검색 (기타사항도 포함)
   if (keyword.length >= 2) {
-    data = data.filter((row) => Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase()));
+    data = data.filter((row) =>
+      Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase())
+    );
   }
 
   // 3. 정렬
@@ -212,7 +220,8 @@ const filteredData = computed(() => {
     const bVal = sortKey.value === "기타사항" ? b.기타사항 : b[sortKey.value];
 
     if (["격노", "Rank"].includes(sortKey.value)) {
-      const isEmpty = (v) => v === undefined || v === null || v === "" || v === "#N/A";
+      const isEmpty = (v) =>
+        v === undefined || v === null || v === "" || v === "#N/A";
       const aEmpty = isEmpty(aVal);
       const bEmpty = isEmpty(bVal);
       if (aEmpty && !bEmpty) return 1;
@@ -253,7 +262,10 @@ const sortedData_ = computed(() => {
 function highlight(text) {
   const keyword = ntrStore.searchState.keyword.trim();
   if (!keyword || keyword.length < 2 || !text) return text ?? "";
-  const re = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
+  const re = new RegExp(
+    `(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+    "gi"
+  );
   return String(text).replace(re, '<span class="highlight">$1</span>');
 }
 
@@ -283,6 +295,14 @@ function openUserModal(member) {
   console.log("Opening user modal for:", member);
 }
 
+function getRankClass(rank) {
+  const rankNum = Number(rank);
+  if (rankNum === 1) return "rank-1";
+  if (rankNum === 2) return "rank-2";
+  if (rankNum === 3) return "rank-3";
+  return "";
+}
+
 onMounted(() => {
   /* members.value = mergedData.map((itm) => {
     // "기타사항"과 "_originalRowNumber" 키를 제외한 새 객체 생성
@@ -301,6 +321,31 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* .rank-1 {
+  background-color: rgba(79, 209, 197, 0.4); 
+  border-left: 3px solid #4fd1c5;
+}
+.rank-2 {
+  background-color: rgba(138, 43, 226, 0.3); 
+  border-left: 3px solid #8a2be2;
+}
+.rank-3 {
+  background-color: rgba(255, 140, 0, 0.3); 
+  border-left: 3px solid #ff8c00;
+} */
+
+.rank-1 {
+  background-color: rgba(255, 183, 77, 0.25); /* 더 밝은 오렌지색 */
+  border-left: 3px solid #ffb74d;
+}
+.rank-2 {
+  background-color: rgba(187, 134, 252, 0.25); /* 더 밝은 보라색 */
+  border-left: 3px solid #bb86fc;
+}
+.rank-3 {
+  background-color: rgba(100, 255, 218, 0.25); /* 더 밝은 청록색 */
+  border-left: 3px solid #64ffda;
+}
 .table-wrap {
   background: #23232e;
   /* background: #4b4b4c; */
