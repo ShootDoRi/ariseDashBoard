@@ -11,15 +11,21 @@ const __dirname = dirname(__filename);
 //const SPREADSHEET_ID = "1yWA5vk9WyQJeRscy7gaatfkZXFBerLwI93IlWIN9WZs";
 //1XYHDDyck67QiJ21eSPK0KJzgOWJv3LevmbXeo4ULDI8
 const SPREADSHEET_ID = "1gcb_DijTMNhS6KcGAVSk5YYNVnCksanlfuiGV_X--DM";
-const RANGE = "시트19!A5:G54"; // A9부터 P58까지 (9행부터 데이터)
+const RANGE = "대시보드 업로드!A5:R54"; // A9부터 P58까지 (9행부터 데이터)
 const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 
 // 컬럼 매핑 정의 (9번째 행부터 데이터로 처리)
 const COLUMN_MAPPING = {
   인게임_닉: 0, // B열
-  "42주차": 2,
-  "43주차": 4,
-  "44주차": 6,
+  태그: 1,
+  "38주차": 3,
+  "39주차": 5,
+  "40주차": 7,
+  "41주차": 9,
+  "42주차": 11,
+  "43주차": 13,
+  "44주차": 15,
+  //"45주차": 17,
 };
 
 async function fetchSheetData() {
@@ -84,12 +90,7 @@ async function fetchSheetData() {
       Object.entries(COLUMN_MAPPING).forEach(([fieldName, columnIndex]) => {
         // 값이 undefined, null, NaN, 빈 값 등 유효하지 않으면 빈 문자열로 처리
         const value = row[columnIndex];
-        obj[fieldName] =
-          value === undefined ||
-          value === null ||
-          (typeof value === "number" && isNaN(value))
-            ? ""
-            : value;
+        obj[fieldName] = value === undefined || value === null || (typeof value === "number" && isNaN(value)) ? "" : value;
       });
 
       // 원본 행 번호 추가 (9번째 행부터 시작)
@@ -112,10 +113,7 @@ async function fetchSheetData() {
 
     if (cleanData.length === 0) {
       console.log("❌ 유효한 데이터가 없습니다.");
-      console.log(
-        "원본 데이터 샘플:",
-        JSON.stringify(extractedData.slice(0, 3), null, 2)
-      );
+      console.log("원본 데이터 샘플:", JSON.stringify(extractedData.slice(0, 3), null, 2));
       return;
     }
 
@@ -147,11 +145,7 @@ async function fetchSheetData() {
     console.log("\n=== 통계 ===");
     console.log(`총 행 수: ${cleanData.length}`);
     console.log(`추출된 필드: ${Object.keys(COLUMN_MAPPING).join(", ")}`);
-    console.log(
-      `첫 번째 데이터의 원본 행 번호: ${
-        cleanData.length > 0 ? cleanData[0]._originalRowNumber : "N/A"
-      }`
-    );
+    console.log(`첫 번째 데이터의 원본 행 번호: ${cleanData.length > 0 ? cleanData[0]._originalRowNumber : "N/A"}`);
 
     return cleanData;
   } catch (error) {

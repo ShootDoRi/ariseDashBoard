@@ -70,12 +70,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="m in filteredData"
-          :key="m.no"
-          @click.stop="openUserModal(m)"
-          style="cursor: pointer"
-        >
+        <tr v-for="m in filteredData" :key="m.no" @click.stop="openUserModal(m)" style="cursor: pointer">
           <td class="col-no" v-html="highlight(m['순번'])"></td>
           <td class="col-nick" v-html="highlight(m['인게임_닉'])"></td>
           <td class="col-pos" v-html="highlight(m['직위'])"></td>
@@ -105,7 +100,7 @@ const list = ref([...sheetDataFlow1, ...sheetDataGallery]);
 const mergedList = computed(() => {
   const map = new Map();
   list.value.forEach((item) => {
-    const tag = item["인게임_닉"];
+    const tag = item["태그"];
     if (!map.has(tag)) {
       map.set(tag, { ...item });
     } else {
@@ -151,9 +146,7 @@ const filteredData = computed(() => {
   }));
 
   if (keyword.length >= 2) {
-    data = data.filter((row) =>
-      Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase())
-    );
+    data = data.filter((row) => Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase()));
   }
 
   if (!sortKey.value) return data;
@@ -162,8 +155,7 @@ const filteredData = computed(() => {
     const bVal = sortKey.value === "기타사항" ? b.기타사항 : b[sortKey.value];
 
     if (["격노", "Rank"].includes(sortKey.value)) {
-      const isEmpty = (v) =>
-        v === undefined || v === null || v === "" || v === "#N/A";
+      const isEmpty = (v) => v === undefined || v === null || v === "" || v === "#N/A";
       const aEmpty = isEmpty(aVal);
       const bEmpty = isEmpty(bVal);
       if (aEmpty && !bEmpty) return 1;
@@ -189,10 +181,7 @@ const filteredData = computed(() => {
 function highlight(text) {
   const keyword = galleryStore.searchState.keyword.trim();
   if (!keyword || keyword.length < 2 || !text) return text ?? "";
-  const re = new RegExp(
-    `(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
-    "gi"
-  );
+  const re = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
   return String(text).replace(re, '<span class="highlight">$1</span>');
 }
 
@@ -215,9 +204,7 @@ function openUserModal(member) {
     mergedList.value.find((m) => m["인게임_닉"] === member["인게임_닉"])
   );
 
-  const mergedData = mergedList.value.find(
-    (m) => m["인게임_닉"] === member["인게임_닉"]
-  );
+  const mergedData = mergedList.value.find((m) => m["인게임_닉"] === member["인게임_닉"]);
   commonStore.modalState.userData = { ...mergedData, ...member };
   commonStore.modalState.isOpen = true;
   console.log("Opening user modal for:", member);
