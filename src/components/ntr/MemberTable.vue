@@ -110,13 +110,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          v-for="m in filteredData"
-          :key="m.no"
-          @click.stop="openUserModal(m)"
-          style="cursor: pointer"
-          :class="getRankClass(m.Rank)"
-        >
+        <tr v-for="m in filteredData" :key="m.no" @click.stop="openUserModal(m)" style="cursor: pointer" :class="getRankClass(m.Rank)">
           <td class="col-no" v-html="highlight(m['순번'])"></td>
           <td class="col-nick" v-html="highlight(m['인게임_닉'])"></td>
           <td class="col-tag" v-html="highlight(m['태그'])"></td>
@@ -208,9 +202,7 @@ const filteredData = computed(() => {
 
   // 2. 2글자 이상일 때만 검색 (기타사항도 포함)
   if (keyword.length >= 2) {
-    data = data.filter((row) =>
-      Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase())
-    );
+    data = data.filter((row) => Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase()));
   }
 
   // 3. 정렬
@@ -220,8 +212,7 @@ const filteredData = computed(() => {
     const bVal = sortKey.value === "기타사항" ? b.기타사항 : b[sortKey.value];
 
     if (["격노", "Rank"].includes(sortKey.value)) {
-      const isEmpty = (v) =>
-        v === undefined || v === null || v === "" || v === "#N/A";
+      const isEmpty = (v) => v === undefined || v === null || v === "" || v === "#N/A";
       const aEmpty = isEmpty(aVal);
       const bEmpty = isEmpty(bVal);
       if (aEmpty && !bEmpty) return 1;
@@ -262,10 +253,7 @@ const sortedData_ = computed(() => {
 function highlight(text) {
   const keyword = ntrStore.searchState.keyword.trim();
   if (!keyword || keyword.length < 2 || !text) return text ?? "";
-  const re = new RegExp(
-    `(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
-    "gi"
-  );
+  const re = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
   return String(text).replace(re, '<span class="highlight">$1</span>');
 }
 
@@ -320,139 +308,6 @@ onMounted(() => {
 ]; */
 </script>
 
-<style scoped>
-/* .rank-1 {
-  background-color: rgba(79, 209, 197, 0.4); 
-  border-left: 3px solid #4fd1c5;
-}
-.rank-2 {
-  background-color: rgba(138, 43, 226, 0.3); 
-  border-left: 3px solid #8a2be2;
-}
-.rank-3 {
-  background-color: rgba(255, 140, 0, 0.3); 
-  border-left: 3px solid #ff8c00;
-} */
-
-.rank-1 {
-  background-color: rgba(255, 183, 77, 0.25); /* 더 밝은 오렌지색 */
-  border-left: 3px solid #ffb74d;
-}
-.rank-2 {
-  background-color: rgba(187, 134, 252, 0.25); /* 더 밝은 보라색 */
-  border-left: 3px solid #bb86fc;
-}
-.rank-3 {
-  background-color: rgba(100, 255, 218, 0.25); /* 더 밝은 청록색 */
-  border-left: 3px solid #64ffda;
-}
-.table-wrap {
-  background: #23232e;
-  /* background: #4b4b4c; */
-  border-radius: 14px;
-  padding: 0 0 0 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-.member-table {
-  width: 100%;
-  border-collapse: collapse;
-  /* background: #23232e; */
-  background: #4b4b4c;
-  /* color: #fff; */
-  color: #bbb;
-  border-radius: 14px;
-  overflow: hidden;
-}
-.member-table th,
-.member-table td {
-  padding: 12px 10px;
-  border-bottom: 1px solid #282a36;
-  text-align: center;
-  font-size: 1.01rem;
-}
-.member-table th {
-  /* background: #23232e; */
-  background: #4b4b4c;
-  /* color: #bfc2e2; */
-  color: #bbb;
-  font-weight: 600;
-}
-.member-table tr:last-child td {
-  border-bottom: none;
-}
-.note-btn {
-  background: #23232e;
-  color: #4fd1c5;
-  border: 1px solid #4fd1c5;
-  border-radius: 6px;
-  padding: 2px 10px;
-  font-size: 0.98rem;
-  cursor: pointer;
-}
-
-/* ...기존 스타일... */
-:deep(tbody) {
-  td {
-    span.highlight {
-      background-color: #fff9c0 !important;
-      color: #222;
-      border-radius: 3px;
-      padding: 0 2px;
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .table-wrap {
-    overflow-x: auto;
-    padding: 0;
-  }
-  .member-table {
-    min-width: unset;
-    width: 100%;
-    font-size: 0.95rem;
-    table-layout: fixed; /* 각 컬럼이 균등하게 분배됨 */
-  }
-  .member-table th,
-  .member-table td {
-    padding: 7px 6px;
-    font-size: 0.92rem;
-    width: auto;
-    word-break: break-all;
-  }
-  /* 숨길 컬럼 */
-
-  .col-tag,
-  .col-pos,
-  .col-bc,
-  .col-boss,
-  .col-mission,
-  .col-total,
-  .col-raid,
-  .col-etc {
-    display: none;
-  }
-  /* 보일 컬럼: 순번, 갤닉, 격노, Rank */
-  /* .col-gal, */
-  .col-no,
-  .col-nick,
-  .col-rage,
-  .col-rank {
-    display: table-cell;
-    width: 25%; /* 4개 컬럼이 균등하게 분배 */
-  }
-}
-
-/* ...기존 스타일... */
-.sort-icon {
-  font-size: 0.85em;
-  margin-left: 4px;
-  color: #bfc2e2;
-  letter-spacing: -2px;
-  user-select: none;
-}
-.sort-icon .active {
-  color: #4fd1c5;
-  font-weight: bold;
-}
+<style scoped lang="scss">
+@include mobile-columns(("col-nick", "col-no", "col-rage", "col-rank"));
 </style>
