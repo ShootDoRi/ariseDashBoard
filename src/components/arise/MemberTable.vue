@@ -1,7 +1,12 @@
 <template>
   <div class="table-wrap">
     <table class="member-table">
-      <TableHeader :columns="columns" :sort-key="sortKey" :sort-order="sortOrder" @sort="sortBy" />
+      <TableHeader
+        :columns="columns"
+        :sort-key="sortKey"
+        :sort-order="sortOrder"
+        @sort="sortBy"
+      />
       <tbody>
         <TableRow
           v-for="member in filteredData"
@@ -23,13 +28,24 @@ import { useMemberTable } from "@/composables/useMemberTable";
 import TableHeader from "@/components/common/table/TableHeader.vue";
 import TableRow from "@/components/common/table/TableRow.vue";
 import dayjs from "dayjs";
-import sheetDataFlow1 from "@/json/arise/flow/sheet_data_flow.json";
+/* import sheetDataFlow1 from "@/json/arise/flow/sheet_data_flow.json";
 import sheetDataFlow2 from "@/json/arise/flow/sheet_data_flow2.json";
-import sheetDataArise from "@/json/arise/flow/sheet_data _45주차.json";
+import sheetDataArise from "@/json/arise/flow/sheet_data _45주차.json"; */
+import flowData from "@/json/arise/flow/sheet_data_flow_final.json";
 
-const { columns, sortKey, sortOrder, filteredData, sortBy, calcAlert, highlight, openUserModal, getRankClass } = useMemberTable("arise");
+const {
+  columns,
+  sortKey,
+  sortOrder,
+  filteredData,
+  sortBy,
+  calcAlert,
+  highlight,
+  openUserModal,
+  getRankClass,
+} = useMemberTable("arise");
 
-const list = ref([...sheetDataFlow1, ...sheetDataFlow2, ...sheetDataArise.map((itm) => ({ ...itm, "45주차": itm["격노"] }))]);
+const list = ref([...flowData]);
 
 const mergedList = computed(() => {
   const map = new Map();

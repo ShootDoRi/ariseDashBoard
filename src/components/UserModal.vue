@@ -15,17 +15,23 @@
         <!-- <li><strong>Rank:</strong> {{ userData?.rank }}</li> -->
       </ul>
       <!-- 선 그래프(가로형) 추가 -->
-      <div v-if="weekChart.labels.length" style="margin-top: 24px">
+      <div
+        class="chat-container"
+        v-if="weekChart.labels.length"
+        style="margin-top: 24px"
+      >
         <!-- <Line
           :data="chartData"
           :options="chartOptions"
           style="max-width: 400px"
         /> -->
-        <Line
-          :data="chartData"
-          :options="chartOptions"
-          style="max-width: 700px; min-width: 500px; height: 340px"
-        />
+        <div class="chart-scroll">
+          <Line
+            :data="chartData"
+            :options="chartOptions"
+            style="max-width: 700px; min-width: 500px; height: 340px"
+          />
+        </div>
       </div>
       <button @click="closeDialog">닫기</button>
     </div>
@@ -36,6 +42,7 @@
 import { computed } from "vue";
 //import { useAriseStore } from "../store/arise";
 import { useCommonStore } from "@/store/common";
+import { useRoute } from "vue-router";
 import { Line } from "vue-chartjs";
 import {
   Chart,
@@ -59,6 +66,8 @@ Chart.register(
 );
 
 const commonStore = useCommonStore();
+
+const route = useRoute();
 
 function closeDialog() {
   commonStore.modalState.isOpen = false;
@@ -110,35 +119,49 @@ const chartData = computed(() => ({
   ],
 }));
 
-const chartOptions = {
-  responsive: true,
-  plugins: {
-    legend: { display: false },
-    tooltip: { enabled: true },
-    datalabels: {
-      anchor: "end",
-      align: "end",
-      color: "#fff",
-      //backgroundColor: "#4fd1c5",
-      backgroundColor: "rgba(79, 209, 197, 0.3)", // 흐린 배경색으로 변경
-      borderRadius: 4,
-      font: { weight: "bold" },
-      offset: 8,
-      formatter: function (value) {
-        return value;
+const chartOptions = computed(() => {
+  let scaleRange = {
+    min: 110,
+    max: 160,
+  };
+
+  if (route.path === "/gallery") {
+    scaleRange = {
+      min: 130,
+      max: 170,
+    };
+  }
+
+  return {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: true },
+      datalabels: {
+        anchor: "end",
+        align: "end",
+        color: "#fff",
+        //backgroundColor: "#4fd1c5",
+        backgroundColor: "rgba(79, 209, 197, 0.3)", // 흐린 배경색으로 변경
+        borderRadius: 4,
+        font: { weight: "bold" },
+        offset: 8,
+        formatter: function (value) {
+          return value;
+        },
       },
     },
-  },
-  scales: {
-    y: {
-      beginAtZero: true,
-      min: 110,
-      max: 160,
-      title: { display: true, text: "격노수" },
+    scales: {
+      y: {
+        beginAtZero: true,
+        min: scaleRange.min,
+        max: scaleRange.max,
+        title: { display: true, text: "격노수" },
+      },
+      x: { title: { display: true, text: "주차" } },
     },
-    x: { title: { display: true, text: "주차" } },
-  },
-};
+  };
+});
 </script>
 
 <style scoped lang="scss">
@@ -208,6 +231,20 @@ const chartOptions = {
   padding: 6px 18px;
   font-size: 1rem;
   cursor: pointer;
+}
+
+.chart-container {
+  overflow-x: auto; /* 가로 스크롤 허용 */
+  overflow-y: hidden; /* 세로 스크롤은 숨김 */
+  white-space: nowrap; /* 가로로 데이터가 흐르도록 설정 */
+  width: 100%; /* 부모 컨테이너 크기에 맞춤 */
+  padding-bottom: 16px; /* 스크롤 영역 아래 여백 */
+  border: 1px solid #4fd1c5; /* 차트 영역을 시각적으로 구분 */
+}
+
+.chart-scroll {
+  display: inline-block; /* 가로 스크롤을 위해 inline-block 사용 */
+  /* 자동 스크롤 애니메이션 제거 */
 }
 
 /* 차트도 반응형으로 */

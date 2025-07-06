@@ -11,10 +11,23 @@
 </template>
 <script setup>
 import { Analytics } from "@vercel/analytics/vue";
+import { watch } from "vue";
 import Sidebar from "./components/Sidebar.vue";
 //import Topbar from "./components/Topbar.vue";
 import UserModal from "./components/UserModal.vue";
 import { useIsMobile } from "./composables/useIsMobile";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+
+watch(
+  () => route,
+  () => {
+    console.log("Route changed:", route);
+  },
+  { immediate: true, deep: true }
+);
+
 const isMobile = useIsMobile();
 //const
 </script>

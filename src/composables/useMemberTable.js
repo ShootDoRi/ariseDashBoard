@@ -12,7 +12,12 @@ export function useMemberTable(storeType) {
   const { columns } = useTableColumns(storeType);
 
   // 스토어 동적 import
-  const store = storeType === "arise" ? useAriseStore() : storeType === "gallery" ? useGalleryStore() : useNtrStore();
+  const store =
+    storeType === "arise"
+      ? useAriseStore()
+      : storeType === "gallery"
+      ? useGalleryStore()
+      : useNtrStore();
 
   const sortKey = ref("");
   const sortOrder = ref(1);
@@ -31,7 +36,7 @@ export function useMemberTable(storeType) {
     const total = Number(data["공헌도합"]?.replace(/,/g, "") || 0);
 
     const today = dayjs();
-    const warningStartDate = dayjs(store.seasonEndDate).subtract(1, "day");
+    const warningStartDate = dayjs(commonStore.endDate).subtract(1, "day");
 
     if (today.isBefore(warningStartDate)) return "";
     if (rage >= 135) return "";
@@ -47,7 +52,12 @@ export function useMemberTable(storeType) {
     }));
 
     if (keyword.length >= 2) {
-      data = data.filter((row) => Object.values(row).join(" ").toLowerCase().includes(keyword.toLowerCase()));
+      data = data.filter((row) =>
+        Object.values(row)
+          .join(" ")
+          .toLowerCase()
+          .includes(keyword.toLowerCase())
+      );
     }
 
     if (!sortKey.value) return data;
@@ -56,7 +66,8 @@ export function useMemberTable(storeType) {
       const bVal = sortKey.value === "기타사항" ? b.기타사항 : b[sortKey.value];
 
       if (["격노", "Rank"].includes(sortKey.value)) {
-        const isEmpty = (v) => v === undefined || v === null || v === "" || v === "#N/A";
+        const isEmpty = (v) =>
+          v === undefined || v === null || v === "" || v === "#N/A";
         const aEmpty = isEmpty(aVal);
         const bEmpty = isEmpty(bVal);
         if (aEmpty && !bEmpty) return 1;
@@ -83,7 +94,10 @@ export function useMemberTable(storeType) {
   function highlight(text) {
     const keyword = store.searchState.keyword.trim();
     if (!keyword || keyword.length < 2 || !text) return text ?? "";
-    const re = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
+    const re = new RegExp(
+      `(${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+      "gi"
+    );
     return String(text).replace(re, '<span class="highlight">$1</span>');
   }
 

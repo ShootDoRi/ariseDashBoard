@@ -2,8 +2,13 @@ import { defineStore } from "pinia";
 import { ref, computed, watch, reactive } from "vue";
 import dayjs from "dayjs";
 
+import localizedFormat from "dayjs/plugin/localizedFormat";
+
+dayjs.extend(localizedFormat);
+
 export const useCommonStore = defineStore("common", () => {
-  const seasonEndDate = ref(dayjs("2025-07-03"));
+  const endDate = "2025-07-10T08:30:00";
+  const seasonEndDate = ref(dayjs(endDate).format("MM/DD HH:mm"));
 
   // search
   const searchState = reactive({
@@ -33,6 +38,7 @@ export const useCommonStore = defineStore("common", () => {
   ]);
 
   return {
+    endDate,
     seasonEndDate,
     searchState,
     modalState,

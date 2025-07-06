@@ -10,9 +10,11 @@ const __dirname = dirname(__filename);
 // 구글 시트 정보
 //const SPREADSHEET_ID = "1yWA5vk9WyQJeRscy7gaatfkZXFBerLwI93IlWIN9WZs";
 //1XYHDDyck67QiJ21eSPK0KJzgOWJv3LevmbXeo4ULDI8
-const SPREADSHEET_ID = "1uBiMi8x89d4_4nTd4QGGR4Xv6-D1K8AwZfMxJqYURsQ";
+//const SPREADSHEET_ID = "1uBiMi8x89d4_4nTd4QGGR4Xv6-D1K8AwZfMxJqYURsQ";
+//1jchqeRaDaxtwSv86vTPKJgwKzt6yyV5_A8WBEgmxIGM
+const SPREADSHEET_ID = "1jchqeRaDaxtwSv86vTPKJgwKzt6yyV5_A8WBEgmxIGM";
 //const RANGE = "A9:L58"; // A9부터 P58까지 (9행부터 데이터)
-const RANGE = "5/8~6/4 파흐트나!A9:N58"; // A9부터 P58까지 (9행부터 데이터) 2번째 시트
+const RANGE = "ariseFlow!A9:O57"; // A9부터 P58까지 (9행부터 데이터) 2번째 시트
 const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 
 // 컬럼 매핑 정의 (9번째 행부터 데이터로 처리)
@@ -39,13 +41,14 @@ const COLUMN_MAPPING = {
   직위: 4, // E열
   배틀클래스: 5, // F열
   "38주차": 6,
-  변동_38: 7,
-  "39주차": 8,
-  변동_39: 9,
-  "40주차": 10,
-  변동_40: 11,
-  "41주차": 12,
-  변동_41: 13,
+  "39주차": 7,
+  "40주차": 8,
+  "41주차": 9,
+  "42주차": 10,
+  "43주차": 11,
+  "44주차": 12,
+  "45주차": 13,
+  "46주차": 14,
 };
 
 async function fetchSheetData() {
@@ -123,7 +126,7 @@ async function fetchSheetData() {
     }
 
     // src/json 폴더 생성 (없으면 생성)
-    const jsonDir = join(__dirname, "src", "json/arise");
+    const jsonDir = join(__dirname, "src", "json/arise/flow");
     try {
       mkdirSync(jsonDir, { recursive: true });
       console.log("📁 디렉토리 생성/확인 완료:", jsonDir);
@@ -132,7 +135,7 @@ async function fetchSheetData() {
     }
 
     // JSON 파일로 저장
-    const outputFile = join(jsonDir, "sheet_data_flow2.json");
+    const outputFile = join(jsonDir, "sheet_data_flow_final.json");
     console.log("저장할 파일 경로:", outputFile);
 
     try {
