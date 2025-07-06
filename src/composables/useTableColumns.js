@@ -2,7 +2,7 @@ import { computed } from "vue";
 
 const ALL_COLUMNS = {
   순번: { key: "순번", label: "순번", class: "col-no" },
-  인게임_닉: { key: "인게임_닉", label: "인게임_닉", class: "col-nick" },
+  인게임_닉: { key: "인게임_닉", label: "닉네임", class: "col-nickname" },
   태그: { key: "태그", label: "태그", class: "col-tag" },
   갤닉: { key: "갤닉", label: "갤닉", class: "col-gal" },
   직위: { key: "직위", label: "직위", class: "col-pos" },
@@ -31,7 +31,7 @@ const PRESETS = {
     "순번",
     "인게임_닉",
     "태그",
-    "갤닉",
+    //"갤닉",
     "직위",
     "배틀클래스",
     "보스공헌도",

@@ -127,8 +127,8 @@ const chartOptions = computed(() => {
 
   if (route.path === "/gallery") {
     scaleRange = {
-      min: 130,
-      max: 170,
+      min: 125,
+      max: 165,
     };
   }
 

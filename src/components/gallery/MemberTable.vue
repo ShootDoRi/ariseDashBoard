@@ -44,5 +44,5 @@ const mergedList = computed(() => {
 </script>
 
 <style lang="scss">
-@include mobile-columns(("col-nick", "col-no", "col-rage", "col-rank"));
+@include mobile-columns(("col-no", "col-nick", "col-rage", "col-rank")); // 순서도 맞춤
 </style>
