@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard">
     <div class="top-row">
-      <StatCard title="Season46 종료일" :value="endDateForm" />
+      <StatCard title="Season47 종료일" :value="commonStore.seasonEndDate" />
       <StatCard title="남은 시간" :value="remainingTime" />
       <!-- 모바일에서만 2개씩 한 줄에 -->
       <div class="stat-row" :class="{ mobile: isMobile }">
@@ -22,7 +22,9 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useNtrStore } from "@/store/ntr";
+import { useCommonStore } from "@/store/common";
 import { useIsMobile } from "@/composables/useIsMobile";
+import { useRemainingTime } from "@/composables/useRemainingTime";
 import StatCard from "@/components/ntr/StatCard.vue";
 import PieCard from "@/components/ntr/PieCard.vue";
 import MemberTable from "@/components/ntr/MemberTable.vue";
@@ -31,42 +33,14 @@ import duration from "dayjs/plugin/duration";
 dayjs.extend(duration);
 
 const ntrStore = useNtrStore();
+const commonStore = useCommonStore();
 const isMobile = useIsMobile();
 
 const endDateForm = dayjs("2025-07-03T08:30:00").format("MM/DD HH:mm");
 const endDateObj = dayjs("2025-07-03T08:30:00");
 const endDate = endDateObj.format("MM/DD HH:mm");
 
-const remainingTime = ref("");
-
-function updateRemainingTime() {
-  const now = dayjs();
-  let diff = endDateObj.diff(now);
-
-  if (diff < 0) {
-    remainingTime.value = "종료";
-    return;
-  }
-
-  const duration = dayjs.duration(diff);
-  const days = Math.floor(duration.asDays());
-  const hours = duration.hours();
-  const minutes = duration.minutes();
-  const seconds = duration.seconds();
-
-  remainingTime.value = `${days}일 ${hours}시 ${minutes}분 ${seconds}초`;
-}
-
-let timer;
-// 모바일 여부 감지
-
-onMounted(() => {
-  updateRemainingTime();
-  timer = setInterval(updateRemainingTime, 1000 * 1);
-});
-onUnmounted(() => {
-  clearInterval(timer);
-});
+const { remainingTime } = useRemainingTime(commonStore.endDate);
 </script>
 
 <style scoped lang="scss">
