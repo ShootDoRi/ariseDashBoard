@@ -4,6 +4,7 @@ import { useCommonStore } from "@/store/common";
 import { useAriseStore } from "@/store/arise";
 import { useGalleryStore } from "@/store/gallery";
 import { useNtrStore } from "@/store/ntr";
+import { useAllStore } from "@/store/all";
 import { useTableColumns } from "@/composables/useTableColumns";
 import dayjs from "dayjs";
 
@@ -17,6 +18,8 @@ export function useMemberTable(storeType) {
       ? useAriseStore()
       : storeType === "gallery"
       ? useGalleryStore()
+      : storeType === "all"
+      ? useAllStore()
       : useNtrStore();
 
   const sortKey = ref("");
