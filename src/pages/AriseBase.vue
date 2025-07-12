@@ -1,12 +1,12 @@
 <template>
   <div class="dashboard">
     <div class="top-row">
-      <StatCard title="Season47 종료일" :value="commonStore.seasonEndDate" />
+      <StatCard title="Season48 종료일" :value="commonStore.seasonEndDate" />
       <StatCard title="남은 시간" :value="remainingTime" />
       <!-- 모바일에서만 2개씩 한 줄에 -->
       <div class="stat-row" :class="{ mobile: isMobile }">
         <StatCard title="격노 평균" :value="ariseStore.averageRage" />
-        <StatCard title="레이드 참여수" :value="`(49/${ariseStore.actualParticipants})`" />
+        <StatCard title="레이드 참여수" :value="`(47/${ariseStore.actualParticipants})`" />
       </div>
       <PieCard />
     </div>

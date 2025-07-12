@@ -14,7 +14,7 @@ const __dirname = dirname(__filename);
 //1jchqeRaDaxtwSv86vTPKJgwKzt6yyV5_A8WBEgmxIGM
 const SPREADSHEET_ID = "1jchqeRaDaxtwSv86vTPKJgwKzt6yyV5_A8WBEgmxIGM";
 //const RANGE = "A9:L58"; // A9부터 P58까지 (9행부터 데이터)
-const RANGE = "ariseFlow!A9:O57"; // A9부터 P58까지 (9행부터 데이터) 2번째 시트
+const RANGE = "ariseFlow!A9:P55"; // A9부터 P58까지 (9행부터 데이터) 2번째 시트
 const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 
 // 컬럼 매핑 정의 (9번째 행부터 데이터로 처리)
@@ -49,6 +49,7 @@ const COLUMN_MAPPING = {
   "44주차": 12,
   "45주차": 13,
   "46주차": 14,
+  "47주차": 15,
 };
 
 async function fetchSheetData() {

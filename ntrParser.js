@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 //const SPREADSHEET_ID = "1yWA5vk9WyQJeRscy7gaatfkZXFBerLwI93IlWIN9WZs";
 //1XYHDDyck67QiJ21eSPK0KJzgOWJv3LevmbXeo4ULDI8
 const SPREADSHEET_ID = "1jchqeRaDaxtwSv86vTPKJgwKzt6yyV5_A8WBEgmxIGM";
-const RANGE = "NTR!A9:O58"; // A9부터 P58까지 (9행부터 데이터)
+const RANGE = "NTR!A9:J55"; // A9부터 J58까지 (9행부터 데이터)
 const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 
 // 컬럼 매핑 정의 (9번째 행부터 데이터로 처리)
@@ -21,9 +21,9 @@ const COLUMN_MAPPING = {
   태그: 2,
   직위: 4, // E열
   배틀클래스: 5, // F열
-  길드레이드_점수: 12, // O열
-  격노: 13, // P열
-  Rank: 14,
+  길드레이드_점수: 6, // O열
+  격노: 7, // P열
+  Rank: 8,
 };
 
 async function fetchSheetData() {

@@ -7,10 +7,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const SPREADSHEET_ID = "1_8Ynu49HQd8DvP9G1d2QZlyjdgDpty9DZIulDHFGWb8";
-const RANGE1 = "2025-06-25!A5:M54"; // 45주차
-const RANGE2 = "2025-06-18!A5:M54"; // 44주차
-const RANGE3 = "2025-06-11!A5:M54"; // 43주차
-const RANGE4 = "2025-06-04!A5:M54"; // 42주차
+const RANGE1 = "2025-07-09!A5:M54"; // 47주차
+const RANGE2 = "2025-07-02!A5:M54"; // 46주차
+const RANGE3 = "2025-06-25!A5:M54"; // 45주차
+const RANGE4 = "2025-06-18!A5:M54"; // 44주차
+const RANGE5 = "2025-06-11!A5:M54"; // 43주차
+const RANGE6 = "2025-06-04!A5:M54"; // 42주차
 const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 
 const COLUMN_MAPPING = {
@@ -49,11 +51,13 @@ async function fetchSheetData() {
   const sheets = google.sheets({ version: "v4", auth: API_KEY });
 
   // 각 주차별 데이터 가져오기
-  const [data4, data3, data2, data1] = await Promise.all([
-    fetchSheetRange(sheets, RANGE4, "42주차"),
-    fetchSheetRange(sheets, RANGE3, "43주차"),
-    fetchSheetRange(sheets, RANGE2, "44주차"),
-    fetchSheetRange(sheets, RANGE1, "45주차"),
+  const [data6, data5, data4, data3, data2, data1] = await Promise.all([
+    fetchSheetRange(sheets, RANGE6, "42주차"),
+    fetchSheetRange(sheets, RANGE5, "43주차"),
+    fetchSheetRange(sheets, RANGE4, "44주차"),
+    fetchSheetRange(sheets, RANGE3, "45주차"),
+    fetchSheetRange(sheets, RANGE2, "46주차"),
+    fetchSheetRange(sheets, RANGE1, "47주차"),
   ]);
 
   // 모든 데이터 합치기 (주차별로)
