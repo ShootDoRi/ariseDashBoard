@@ -17,7 +17,6 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useAriseStore } from "@/store/arise";
 import { useCommonStore } from "@/store/common";
 import { useIsMobile } from "@/composables/useIsMobile";
