@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard">
     <div class="top-row">
-      <StatCard title="7월 2주차 통합순위" value="7/3 ~ 7/10" />
+      <StatCard title="7월 3주차 통합순위" value="7/10 ~ 7/17" />
       <!-- <StatCard title="남은 시간" :value="remainingTime" /> -->
       <!-- 모바일에서만 2개씩 한 줄에 -->
       <div class="stat-row" :class="{ mobile: isMobile }">
