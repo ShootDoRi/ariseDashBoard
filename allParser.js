@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 //const SPREADSHEET_ID = "1yWA5vk9WyQJeRscy7gaatfkZXFBerLwI93IlWIN9WZs";
 //1XYHDDyck67QiJ21eSPK0KJzgOWJv3LevmbXeo4ULDI8
 const SPREADSHEET_ID = "1gcb_DijTMNhS6KcGAVSk5YYNVnCksanlfuiGV_X--DM";
-const RANGE = "대시보드 전체갤길!A4:E252"; // A9부터 P58까지 (9행부터 데이터)
+const RANGE = "대시보드 전체갤길!A4:E234"; // A9부터 P58까지 (9행부터 데이터)
 const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 
 // 컬럼 매핑 정의 (9번째 행부터 데이터로 처리)
@@ -108,10 +108,7 @@ async function fetchSheetData() {
 
     if (cleanData.length === 0) {
       console.log("❌ 유효한 데이터가 없습니다.");
-      console.log(
-        "원본 데이터 샘플:",
-        JSON.stringify(extractedData.slice(0, 3), null, 2)
-      );
+      console.log("원본 데이터 샘플:", JSON.stringify(extractedData.slice(0, 3), null, 2));
       return;
     }
 
@@ -143,11 +140,7 @@ async function fetchSheetData() {
     console.log("\n=== 통계 ===");
     console.log(`총 행 수: ${cleanData.length}`);
     console.log(`추출된 필드: ${Object.keys(COLUMN_MAPPING).join(", ")}`);
-    console.log(
-      `첫 번째 데이터의 원본 행 번호: ${
-        cleanData.length > 0 ? cleanData[0]._originalRowNumber : "N/A"
-      }`
-    );
+    console.log(`첫 번째 데이터의 원본 행 번호: ${cleanData.length > 0 ? cleanData[0]._originalRowNumber : "N/A"}`);
 
     return cleanData;
   } catch (error) {
