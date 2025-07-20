@@ -3,6 +3,8 @@ import { writeFileSync, mkdirSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
+import extraData from "./src/json/gallery/extraData.js";
+
 // ES 모듈에서 __filename, __dirname 대체
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -11,7 +13,7 @@ const __dirname = dirname(__filename);
 //const SPREADSHEET_ID = "1yWA5vk9WyQJeRscy7gaatfkZXFBerLwI93IlWIN9WZs";
 //1XYHDDyck67QiJ21eSPK0KJzgOWJv3LevmbXeo4ULDI8
 const SPREADSHEET_ID = "1gcb_DijTMNhS6KcGAVSk5YYNVnCksanlfuiGV_X--DM";
-const RANGE = "대시보드 업로드!A5:T54"; // A9부터 P58까지 (9행부터 데이터)
+const RANGE = "대시보드 업로드!A5:V54"; // A9부터 P58까지 (9행부터 데이터)
 const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 
 // 컬럼 매핑 정의 (9번째 행부터 데이터로 처리)
@@ -27,6 +29,7 @@ const COLUMN_MAPPING = {
   "45주차": 15,
   "46주차": 17,
   "47주차": 19,
+  "48주차": 21,
 };
 
 async function fetchSheetData() {
@@ -111,7 +114,31 @@ async function fetchSheetData() {
     /* const cleanData = extractedData.filter((row) => {
       return row["순번"] && row["순번"].toString().trim() !== "";
     }); */
-    const cleanData = extractedData.filter((row) => {
+    /* const cleanData = extractedData.filter((row) => {
+      return row["인게임_닉"] && row["인게임_닉"].toString().trim() !== "";
+    }); */
+
+    function mergeExtraData(mainArr, extraArr) {
+      const normalizeTag = (tag) =>
+        (tag || "").replace(/[#\s]/g, "").toUpperCase();
+      const extraMap = new Map();
+      extraArr.forEach((item) => {
+        const tag = normalizeTag(item["태그"]);
+        if (tag) extraMap.set(tag, item);
+      });
+      return mainArr.map((obj) => {
+        const tag = normalizeTag(obj["태그"]);
+        if (tag && extraMap.has(tag)) {
+          return { ...obj, ...extraMap.get(tag) };
+        }
+        return obj;
+      });
+    }
+
+    const mergedData = mergeExtraData(extractedData, extraData);
+
+    // 이후 cleanData 생성 시 mergedData 사용
+    const cleanData = mergedData.filter((row) => {
       return row["인게임_닉"] && row["인게임_닉"].toString().trim() !== "";
     });
 
