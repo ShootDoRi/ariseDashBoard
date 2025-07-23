@@ -6,10 +6,7 @@
       <!-- 모바일에서만 2개씩 한 줄에 -->
       <div class="stat-row" :class="{ mobile: isMobile }">
         <StatCard title="격노 평균" :value="ntrStore.averageRage" />
-        <StatCard
-          title="레이드 참여수"
-          :value="`(47/${ntrStore.actualParticipants})`"
-        />
+        <StatCard title="레이드 참여수" :value="`(45/${ntrStore.actualParticipants})`" />
       </div>
       <PieCard />
     </div>
