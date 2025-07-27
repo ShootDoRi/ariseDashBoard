@@ -1,7 +1,10 @@
 <template>
   <div class="dashboard">
     <div class="top-row">
-      <StatCard title="Season49 종료일" :value="commonStore.seasonEndDate" />
+      <StatCard
+        :title="commonStore.seasonEndDateText"
+        :value="commonStore.seasonEndDate"
+      />
       <StatCard title="남은 시간" :value="remainingTime" />
       <!-- 모바일에서만 2개씩 한 줄에 -->
       <div class="stat-row" :class="{ mobile: isMobile }">
