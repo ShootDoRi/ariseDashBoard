@@ -7,14 +7,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const SPREADSHEET_ID = "1_8Ynu49HQd8DvP9G1d2QZlyjdgDpty9DZIulDHFGWb8";
-const RANGE1 = "2025-07-23!A5:M51"; // 48주차
-const RANGE2 = "2025-07-16!A5:M50"; // 47주차
-const RANGE3 = "2025-07-09!A5:M54"; // 47주차
-const RANGE4 = "2025-07-02!A5:M54"; // 46주차
-const RANGE5 = "2025-06-25!A5:M54"; // 45주차
-const RANGE6 = "2025-06-18!A5:M54"; // 44주차
-const RANGE7 = "2025-06-11!A5:M54"; // 43주차
-const RANGE8 = "2025-06-04!A5:M54"; // 42주차
+const RANGE1 = "2025-07-30!A5:M52"; // 50주차
+const RANGE2 = "2025-07-23!A5:M51"; // 48주차
+const RANGE3 = "2025-07-16!A5:M50"; // 47주차
+const RANGE4 = "2025-07-09!A5:M54"; // 47주차
+const RANGE5 = "2025-07-02!A5:M54"; // 46주차
+const RANGE6 = "2025-06-25!A5:M54"; // 45주차
+const RANGE7 = "2025-06-18!A5:M54"; // 44주차
+const RANGE8 = "2025-06-11!A5:M54"; // 43주차
+const RANGE9 = "2025-06-04!A5:M54"; // 42주차
 const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 
 const COLUMN_MAPPING = {
@@ -53,29 +54,20 @@ async function fetchSheetData() {
   const sheets = google.sheets({ version: "v4", auth: API_KEY });
 
   // 각 주차별 데이터 가져오기
-  const [data8, data7, data6, data5, data4, data3, data2, data1] =
-    await Promise.all([
-      fetchSheetRange(sheets, RANGE8, "42주차"),
-      fetchSheetRange(sheets, RANGE7, "43주차"),
-      fetchSheetRange(sheets, RANGE6, "44주차"),
-      fetchSheetRange(sheets, RANGE5, "45주차"),
-      fetchSheetRange(sheets, RANGE4, "46주차"),
-      fetchSheetRange(sheets, RANGE3, "47주차"),
-      fetchSheetRange(sheets, RANGE2, "48주차"),
-      fetchSheetRange(sheets, RANGE1, "49주차"),
-    ]);
+  const [data9, data8, data7, data6, data5, data4, data3, data2, data1] = await Promise.all([
+    fetchSheetRange(sheets, RANGE9, "42주차"),
+    fetchSheetRange(sheets, RANGE8, "43주차"),
+    fetchSheetRange(sheets, RANGE7, "44주차"),
+    fetchSheetRange(sheets, RANGE6, "45주차"),
+    fetchSheetRange(sheets, RANGE5, "46주차"),
+    fetchSheetRange(sheets, RANGE4, "47주차"),
+    fetchSheetRange(sheets, RANGE3, "48주차"),
+    fetchSheetRange(sheets, RANGE2, "49주차"),
+    fetchSheetRange(sheets, RANGE1, "50주차"),
+  ]);
 
   // 모든 데이터 합치기 (주차별로)
-  const allData = [
-    ...data8,
-    ...data7,
-    ...data6,
-    ...data5,
-    ...data4,
-    ...data3,
-    ...data2,
-    ...data1,
-  ];
+  const allData = [...data9, ...data8, ...data7, ...data6, ...data5, ...data4, ...data3, ...data2, ...data1];
 
   // 태그 기준으로 병합 (최신 데이터가 마지막에 오도록)
   // 태그 정규화 함수 추가 (병합 기준을 통일)
