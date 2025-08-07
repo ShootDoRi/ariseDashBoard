@@ -1,12 +1,15 @@
 <template>
   <div class="dashboard">
     <div class="top-row">
-      <StatCard title="7월 5주차 통합순위" value="7/24 ~ 7/31" />
+      <StatCard title="8월 1주차 통합순위" value="7/31 ~ 8/7" />
       <!-- <StatCard title="남은 시간" :value="remainingTime" /> -->
       <!-- 모바일에서만 2개씩 한 줄에 -->
       <div class="stat-row" :class="{ mobile: isMobile }">
         <StatCard title="격노 평균" :value="allStore.averageRage" />
-        <StatCard title="레이드 참여수" :value="`${allStore.actualParticipants}`" />
+        <StatCard
+          title="레이드 참여수"
+          :value="`${allStore.actualParticipants}`"
+        />
       </div>
       <PieCard />
     </div>
