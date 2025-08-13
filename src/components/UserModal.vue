@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="dialog-backdrop"
-    :class="{ active: commonStore.modalState.isOpen }"
-    @click.self="closeDialog"
-  >
+  <div class="dialog-backdrop" :class="{ active: commonStore.modalState.isOpen }" @click.self="closeDialog">
     <div class="dialog" :class="{ active: commonStore.modalState.isOpen }">
       <h3>유저 상세 정보</h3>
       <ul>
@@ -12,25 +8,11 @@
         <li><strong>갤닉:</strong> {{ userData?.gal }}</li>
         <li><strong>직위:</strong> {{ userData?.pos }}</li>
         <li><strong>배틀클래스:</strong> {{ userData?.배틀클래스 }}</li>
-        <!-- <li><strong>Rank:</strong> {{ userData?.rank }}</li> -->
       </ul>
-      <!-- 선 그래프(가로형) 추가 -->
-      <div
-        class="chat-container"
-        v-if="weekChart.labels.length"
-        style="margin-top: 24px"
-      >
-        <!-- <Line
-          :data="chartData"
-          :options="chartOptions"
-          style="max-width: 400px"
-        /> -->
+      <!-- 차트 컨테이너 수정 -->
+      <div class="chart-container" v-if="weekChart.labels.length" style="margin-top: 24px">
         <div class="chart-scroll">
-          <Line
-            :data="chartData"
-            :options="chartOptions"
-            style="max-width: 700px; min-width: 500px; height: 340px"
-          />
+          <Line :data="chartData" :options="chartOptions" :style="chartStyle" />
         </div>
       </div>
       <button @click="closeDialog">닫기</button>
@@ -40,33 +22,15 @@
 
 <script setup>
 import { computed } from "vue";
-//import { useAriseStore } from "../store/arise";
 import { useCommonStore } from "@/store/common";
 import { useRoute } from "vue-router";
 import { Line } from "vue-chartjs";
-import {
-  Chart,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import ChartDataLabels from "chartjs-plugin-datalabels"; // 추가
+import { Chart, LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
-Chart.register(
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  ChartDataLabels // 플러그인 등록
-);
+Chart.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend, ChartDataLabels);
 
 const commonStore = useCommonStore();
-
 const route = useRoute();
 
 function closeDialog() {
@@ -92,13 +56,22 @@ const weekChart = computed(() => {
   if (!userData.value) return { labels: [], data: [] };
   const weekEntries = Object.entries(userData.value)
     .filter(([key, val]) => /^\d+주차$/.test(key) && !isNaN(Number(val)))
-    .sort(
-      ([a], [b]) =>
-        Number(a.replace("주차", "")) - Number(b.replace("주차", ""))
-    );
+    .sort(([a], [b]) => Number(a.replace("주차", "")) - Number(b.replace("주차", "")));
   return {
     labels: weekEntries.map(([key]) => key),
     data: weekEntries.map(([_, val]) => Number(val)),
+  };
+});
+
+// 차트 스타일을 동적으로 계산
+const chartStyle = computed(() => {
+  const dataCount = weekChart.value.labels.length;
+  const minWidth = Math.max(300, dataCount * 40); // 주차당 80px씩 할당, 최소 500px
+
+  return {
+    minWidth: `${minWidth}px`,
+    width: `${minWidth}px`,
+    height: "340px",
   };
 });
 
@@ -134,6 +107,7 @@ const chartOptions = computed(() => {
 
   return {
     responsive: true,
+    maintainAspectRatio: false, // 가로 스크롤을 위해 비율 유지 해제
     plugins: {
       legend: { display: false },
       tooltip: { enabled: true },
@@ -141,8 +115,7 @@ const chartOptions = computed(() => {
         anchor: "end",
         align: "end",
         color: "#fff",
-        //backgroundColor: "#4fd1c5",
-        backgroundColor: "rgba(79, 209, 197, 0.3)", // 흐린 배경색으로 변경
+        backgroundColor: "rgba(79, 209, 197, 0.3)",
         borderRadius: 4,
         font: { weight: "bold" },
         offset: 8,
@@ -158,7 +131,14 @@ const chartOptions = computed(() => {
         max: scaleRange.max,
         title: { display: true, text: "격노수" },
       },
-      x: { title: { display: true, text: "주차" } },
+      x: {
+        title: { display: true, text: "주차" },
+        // x축 라벨이 겹치지 않도록 설정
+        ticks: {
+          maxRotation: 45,
+          minRotation: 0,
+        },
+      },
     },
   };
 });
@@ -179,16 +159,19 @@ const chartOptions = computed(() => {
   pointer-events: none;
   opacity: 0;
   transition: background 0.25s, opacity 0.25s;
+
   .dialog {
     transform: scale(0.85);
     opacity: 0;
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s;
     pointer-events: none;
   }
+
   &.active {
     background: rgba(0, 0, 0, 0.45);
     opacity: 1;
     pointer-events: auto;
+
     .dialog {
       transform: scale(1);
       opacity: 1;
@@ -196,17 +179,21 @@ const chartOptions = computed(() => {
     }
   }
 }
+
 .dialog {
   background: #23232e;
   color: #fff;
   border-radius: 12px;
   padding: 24px 18px;
-  min-width: 300px;
-  max-width: 80vw;
+  min-width: 400px;
+  max-width: 90vw;
+  max-height: 90vh;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+  overflow: hidden; // 다이얼로그 자체의 overflow 제어
+
   @media (max-width: 600px) {
     min-width: 0;
-    max-width: 98vw;
+    max-width: 95vw;
     padding: 14px 4vw;
   }
 }
@@ -217,6 +204,7 @@ const chartOptions = computed(() => {
   list-style: none;
   text-align: left;
 }
+
 .dialog ul li {
   text-align: left;
   margin-bottom: 6px;
@@ -233,28 +221,50 @@ const chartOptions = computed(() => {
   cursor: pointer;
 }
 
+// 차트 컨테이너 스타일 수정
 .chart-container {
-  overflow-x: auto; /* 가로 스크롤 허용 */
-  overflow-y: hidden; /* 세로 스크롤은 숨김 */
-  white-space: nowrap; /* 가로로 데이터가 흐르도록 설정 */
-  width: 100%; /* 부모 컨테이너 크기에 맞춤 */
-  padding-bottom: 16px; /* 스크롤 영역 아래 여백 */
-  border: 1px solid #4fd1c5; /* 차트 영역을 시각적으로 구분 */
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto; // 가로 스크롤 활성화
+  overflow-y: hidden;
+  padding-bottom: 8px; // 스크롤바 여백
+  border: 1px solid #4fd1c5;
+  border-radius: 8px;
+
+  // 스크롤바 스타일링 (webkit 기반 브라우저)
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #2a2a35;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #4fd1c5;
+    border-radius: 4px;
+
+    &:hover {
+      background: #3ba89a;
+    }
+  }
 }
 
 .chart-scroll {
-  display: inline-block; /* 가로 스크롤을 위해 inline-block 사용 */
-  /* 자동 스크롤 애니메이션 제거 */
+  display: block;
+  width: fit-content; // 내용물 크기에 맞춤
+  min-width: 100%;
 }
 
-/* 차트도 반응형으로 */
+// 모바일 반응형
 @media (max-width: 600px) {
-  .dialog .chart-large,
-  .dialog :deep(canvas) {
-    min-width: 0 !important;
-    max-width: 92vw !important;
-    width: 92vw !important;
-    height: 220px !important;
+  .chart-container {
+    border: 1px solid #4fd1c5;
+  }
+
+  .chart-scroll {
+    min-width: 400px; // 모바일에서 최소 너비 보장
   }
 }
 </style>
