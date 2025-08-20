@@ -64,7 +64,7 @@ const weekChart = computed(() => {
 });
 
 // 차트 스타일을 동적으로 계산
-const chartStyle = computed(() => {
+const chartStyle_ = computed(() => {
   const dataCount = weekChart.value.labels.length;
   const minWidth = Math.max(300, dataCount * 40); // 주차당 80px씩 할당, 최소 500px
 
@@ -72,6 +72,18 @@ const chartStyle = computed(() => {
     minWidth: `${minWidth}px`,
     width: `${minWidth}px`,
     height: "340px",
+  };
+});
+
+// 차트 스타일을 동적으로 계산 - 높이 증가
+const chartStyle = computed(() => {
+  const dataCount = weekChart.value.labels.length;
+  const minWidth = Math.max(300, dataCount * 40);
+
+  return {
+    minWidth: `${minWidth}px`,
+    width: `${minWidth}px`,
+    height: "500px", // 340px → 500px로 증가
   };
 });
 
@@ -160,11 +172,25 @@ const chartOptions = computed(() => {
   opacity: 0;
   transition: background 0.25s, opacity 0.25s;
 
+  // 모바일에서 스크롤 가능하도록 수정
+  @media (max-width: 767px) {
+    align-items: flex-start; // 상단 정렬로 변경
+    overflow-y: auto; // 세로 스크롤 활성화
+    padding: 20px 0; // 상하 여백
+  }
+
   .dialog {
     transform: scale(0.85);
     opacity: 0;
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s;
     pointer-events: none;
+
+    // PC에서는 처음부터 80vw 크기로 시작
+    @media (min-width: 768px) {
+      width: 80vw;
+      max-width: 80vw;
+      transform: scale(1);
+    }
   }
 
   &.active {
@@ -176,6 +202,10 @@ const chartOptions = computed(() => {
       transform: scale(1);
       opacity: 1;
       pointer-events: auto;
+
+      @media (min-width: 768px) {
+        transform: scale(1);
+      }
     }
   }
 }
@@ -189,12 +219,25 @@ const chartOptions = computed(() => {
   max-width: 90vw;
   max-height: 90vh;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
-  overflow: hidden; // 다이얼로그 자체의 overflow 제어
+  overflow: hidden;
 
-  @media (max-width: 600px) {
+  // PC 화면에서의 스타일
+  @media (min-width: 768px) {
+    min-width: 80vw;
+    width: 80vw;
+    max-width: 80vw;
+  }
+
+  // 모바일에서 스타일 수정
+  @media (max-width: 767px) {
     min-width: 0;
     max-width: 95vw;
-    padding: 14px 4vw;
+    width: 95vw;
+    max-height: none; // 높이 제한 제거
+    min-height: auto; // 최소 높이 자동
+    padding: 16px;
+    margin: 20px auto; // 상하 마진으로 여백 확보
+    overflow: visible; // overflow 해제
   }
 }
 
@@ -219,19 +262,29 @@ const chartOptions = computed(() => {
   padding: 6px 18px;
   font-size: 1rem;
   cursor: pointer;
+
+  // 모바일에서 버튼을 더 잘 보이게
+  @media (max-width: 767px) {
+    margin-top: 24px;
+    margin-bottom: 8px; // 하단 여백 추가
+    padding: 12px 24px; // 패딩 증가
+    font-size: 1.1rem; // 폰트 크기 증가
+    width: 100%; // 전체 너비
+  }
 }
 
 // 차트 컨테이너 스타일 수정
 .chart-container {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto; // 가로 스크롤 활성화
+  width: 95%;
+  max-width: 95%;
+  overflow-x: auto;
   overflow-y: hidden;
-  padding-bottom: 8px; // 스크롤바 여백
+  padding: 16px 8px;
+  margin: 24px auto;
   border: 1px solid #4fd1c5;
   border-radius: 8px;
+  min-height: 520px;
 
-  // 스크롤바 스타일링 (webkit 기반 브라우저)
   &::-webkit-scrollbar {
     height: 8px;
   }
@@ -253,18 +306,38 @@ const chartOptions = computed(() => {
 
 .chart-scroll {
   display: block;
-  width: fit-content; // 내용물 크기에 맞춤
+  width: fit-content;
   min-width: 100%;
+  height: 500px;
 }
 
-// 모바일 반응형
-@media (max-width: 600px) {
+// 모바일에서 차트 크기 조정
+@media (max-width: 767px) {
   .chart-container {
     border: 1px solid #4fd1c5;
+    min-height: 350px; // 높이 줄임
+    padding: 12px 4px;
+    margin: 16px 0; // 마진 줄임
   }
 
   .chart-scroll {
-    min-width: 400px; // 모바일에서 최소 너비 보장
+    min-width: 350px; // 너비 줄임
+    height: 300px; // 높이 줄임
+  }
+
+  // 모바일에서 차트 스타일 조정
+  .chart-scroll canvas {
+    height: 300px !important;
+  }
+}
+
+// PC에서 차트가 더 크게 보이도록
+@media (min-width: 768px) {
+  .chart-container {
+    width: 95%;
+    max-width: 95%;
+    margin: 32px auto;
+    padding: 20px 12px;
   }
 }
 </style>
