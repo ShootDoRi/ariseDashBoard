@@ -27,7 +27,6 @@ import { useRoute } from "vue-router";
 import { Line } from "vue-chartjs";
 import { Chart, LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-
 Chart.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend, ChartDataLabels);
 
 const commonStore = useCommonStore();
