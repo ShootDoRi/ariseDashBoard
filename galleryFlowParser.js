@@ -13,7 +13,7 @@ const __dirname = dirname(__filename);
 //const SPREADSHEET_ID = "1yWA5vk9WyQJeRscy7gaatfkZXFBerLwI93IlWIN9WZs";
 //1XYHDDyck67QiJ21eSPK0KJzgOWJv3LevmbXeo4ULDI8
 const SPREADSHEET_ID = "1gcb_DijTMNhS6KcGAVSk5YYNVnCksanlfuiGV_X--DM";
-const RANGE = "대시보드 업로드!A5:Z54"; // A9부터 P58까지 (9행부터 데이터)
+const RANGE = "대시보드 업로드!A5:AF54"; // A9부터 P58까지 (9행부터 데이터)
 const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 
 // 컬럼 매핑 정의 (9번째 행부터 데이터로 처리)
@@ -32,6 +32,9 @@ const COLUMN_MAPPING = {
   "48주차": 21,
   "49주차": 23,
   "50주차": 25,
+  "51주차": 27,
+  "52주차": 29,
+  "53주차": 31,
 };
 
 async function fetchSheetData() {
