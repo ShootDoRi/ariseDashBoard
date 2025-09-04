@@ -10,8 +10,10 @@ const __dirname = dirname(__filename);
 // 구글 시트 정보
 //const SPREADSHEET_ID = "1yWA5vk9WyQJeRscy7gaatfkZXFBerLwI93IlWIN9WZs";
 //1XYHDDyck67QiJ21eSPK0KJzgOWJv3LevmbXeo4ULDI8
-const SPREADSHEET_ID = "1jchqeRaDaxtwSv86vTPKJgwKzt6yyV5_A8WBEgmxIGM";
-const RANGE = "NTR!A9:J58"; // A9부터 J58까지 (9행부터 데이터)
+//1_8Ynu49HQd8DvP9G1d2QZlyjdgDpty9DZIulDHFGWb8
+//const SPREADSHEET_ID = "1jchqeRaDaxtwSv86vTPKJgwKzt6yyV5_A8WBEgmxIGM";
+const SPREADSHEET_ID = "1_8Ynu49HQd8DvP9G1d2QZlyjdgDpty9DZIulDHFGWb8";
+const RANGE = "2025-09-04 (업데이트중)!A5:N59"; // A9부터 J58까지 (9행부터 데이터)
 const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 
 // 컬럼 매핑 정의 (9번째 행부터 데이터로 처리)
@@ -19,11 +21,11 @@ const COLUMN_MAPPING = {
   순번: 0, // A열
   인게임_닉: 1, // B열
   태그: 2,
-  직위: 4, // E열
-  배틀클래스: 5, // F열
-  길드레이드_점수: 6, // O열
-  격노: 7, // P열
-  Rank: 8,
+  직위: 3, // E열
+  배틀클래스: 4, // F열
+  길드레이드_점수: 10, // O열
+  격노: 12, // P열
+  //Rank: 8,
 };
 
 async function fetchSheetData() {
@@ -115,6 +117,22 @@ async function fetchSheetData() {
       return;
     }
 
+    // 길드레이드_점수 기준으로 Rank 계산 및 추가
+    const dataWithRank = cleanData
+      .map((row) => ({
+        ...row,
+        길드레이드_점수: Number(row["길드레이드_점수"]?.toString().replace(/,/g, "") || 0),
+      }))
+      .sort((a, b) => b.길드레이드_점수 - a.길드레이드_점수) // 내림차순 정렬
+      .map((row, index) => ({
+        ...row,
+        Rank: index + 1, // 1등부터 시작
+        길드레이드_점수: row.길드레이드_점수.toLocaleString(), // 다시 콤마 포맷으로 변환
+      }))
+      .sort((a, b) => Number(a.순번) - Number(b.순번)); // 원래 순번 순서로 재정렬
+
+    console.log("Rank 계산 완료");
+
     // src/json 폴더 생성 (없으면 생성)
     const jsonDir = join(__dirname, "src", "json/ntr");
     try {
@@ -129,7 +147,8 @@ async function fetchSheetData() {
     console.log("저장할 파일 경로:", outputFile);
 
     try {
-      writeFileSync(outputFile, JSON.stringify(cleanData, null, 2), "utf8");
+      //writeFileSync(outputFile, JSON.stringify(cleanData, null, 2), "utf8");
+      writeFileSync(outputFile, JSON.stringify(dataWithRank, null, 2), "utf8");
       console.log(`✅ 데이터가 ${outputFile}에 저장되었습니다.`);
     } catch (writeError) {
       console.error("❌ 파일 저장 중 오류:", writeError.message);
@@ -138,14 +157,14 @@ async function fetchSheetData() {
 
     // 콘솔에 처음 3개 행 출력
     console.log("\n=== 처음 3개 행 미리보기 ===");
-    console.log(JSON.stringify(cleanData.slice(0, 3), null, 2));
+    console.log(JSON.stringify(dataWithRank.slice(0, 3), null, 2));
 
     console.log("\n=== 통계 ===");
-    console.log(`총 행 수: ${cleanData.length}`);
+    console.log(`총 행 수: ${dataWithRank.length}`);
     console.log(`추출된 필드: ${Object.keys(COLUMN_MAPPING).join(", ")}`);
-    console.log(`첫 번째 데이터의 원본 행 번호: ${cleanData.length > 0 ? cleanData[0]._originalRowNumber : "N/A"}`);
+    console.log(`첫 번째 데이터의 원본 행 번호: ${dataWithRank.length > 0 ? dataWithRank[0]._originalRowNumber : "N/A"}`);
 
-    return cleanData;
+    return dataWithRank;
   } catch (error) {
     console.error("❌ 오류 발생:");
     console.error("오류 메시지:", error.message);
