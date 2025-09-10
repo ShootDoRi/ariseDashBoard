@@ -13,7 +13,7 @@ const __dirname = dirname(__filename);
 //1_8Ynu49HQd8DvP9G1d2QZlyjdgDpty9DZIulDHFGWb8
 //const SPREADSHEET_ID = "1jchqeRaDaxtwSv86vTPKJgwKzt6yyV5_A8WBEgmxIGM";
 const SPREADSHEET_ID = "1_8Ynu49HQd8DvP9G1d2QZlyjdgDpty9DZIulDHFGWb8";
-const RANGE = "2025-09-04 (업데이트중)!A5:N59"; // A9부터 J58까지 (9행부터 데이터)
+const RANGE = "2025-09-11 (업데이트중)!A5:N51"; // A9부터 J58까지 (9행부터 데이터)
 const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 
 // 컬럼 매핑 정의 (9번째 행부터 데이터로 처리)

@@ -7,9 +7,9 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 dayjs.extend(localizedFormat);
 
 export const useCommonStore = defineStore("common", () => {
-  const endDate = "2025-09-04T08:30:00";
+  const endDate = "2025-09-11T08:30:00";
   const seasonEndDate = ref(dayjs(endDate).format("MM/DD HH:mm"));
-  const seasonEndDateText = ref("Season55 종료일");
+  const seasonEndDateText = ref("Season56 종료일");
 
   // search
   const searchState = reactive({
