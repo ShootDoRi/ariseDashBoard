@@ -11,7 +11,7 @@
         <StatCard title="격노 평균" :value="ariseStore.averageRage" />
         <StatCard
           title="레이드 참여수"
-          :value="`(48/${ariseStore.actualParticipants})`"
+          :value="`(49/${ariseStore.actualParticipants})`"
         />
       </div>
       <PieCard />
