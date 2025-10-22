@@ -6,7 +6,7 @@
       <!-- 모바일에서만 2개씩 한 줄에 -->
       <div class="stat-row" :class="{ mobile: isMobile }">
         <StatCard title="격노 평균" :value="ariseStore.averageRage" />
-        <StatCard title="레이드 참여수" :value="`(50/${ariseStore.actualParticipants})`" />
+        <StatCard title="레이드 참여수" :value="`(42/${ariseStore.actualParticipants})`" />
       </div>
       <PieCard />
     </div>
@@ -42,12 +42,14 @@ const { remainingTime } = useRemainingTime(commonStore.endDate);
   height: 100%;
   box-sizing: border-box;
 }
+
 .top-row {
   display: flex;
   gap: 24px;
   margin-bottom: 32px;
   align-items: stretch;
 }
+
 .table-row {
   margin-top: 12px;
 }
@@ -57,30 +59,36 @@ const { remainingTime } = useRemainingTime(commonStore.endDate);
   flex-direction: column;
   gap: 15px;
 }
+
 @media (max-width: 768px) {
   .dashboard {
     padding: 12px 4px 0 4px;
   }
+
   .top-row {
     flex-direction: column;
     gap: 12px;
     margin-bottom: 12px;
   }
+
   .table-row {
     margin-top: 6px;
   }
+
   /* 격노 평균, 레이드 참여수 카드만 한 줄에 2개로 */
   .top-row {
     display: flex;
     flex-direction: column;
   }
+
   .stat-row.mobile {
     display: flex;
     flex-direction: row;
     gap: 8px;
     margin-bottom: 8px;
   }
-  .stat-row.mobile > * {
+
+  .stat-row.mobile>* {
     flex: 1 1 0;
     min-width: 0;
   }
