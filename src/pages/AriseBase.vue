@@ -6,7 +6,7 @@
       <!-- 모바일에서만 2개씩 한 줄에 -->
       <div class="stat-row" :class="{ mobile: isMobile }">
         <StatCard title="격노 평균" :value="ariseStore.averageRage" />
-        <StatCard title="레이드 참여수" :value="`(42/${ariseStore.actualParticipants})`" />
+        <StatCard title="레이드 참여수" :value="`(50/${ariseStore.actualParticipants})`" />
       </div>
       <PieCard />
     </div>
@@ -88,7 +88,7 @@ const { remainingTime } = useRemainingTime(commonStore.endDate);
     margin-bottom: 8px;
   }
 
-  .stat-row.mobile>* {
+  .stat-row.mobile > * {
     flex: 1 1 0;
     min-width: 0;
   }
