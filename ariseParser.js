@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 //const SPREADSHEET_ID = "1yWA5vk9WyQJeRscy7gaatfkZXFBerLwI93IlWIN9WZs";
 //1XYHDDyck67QiJ21eSPK0KJzgOWJv3LevmbXeo4ULDI8
 const SPREADSHEET_ID = "1jchqeRaDaxtwSv86vTPKJgwKzt6yyV5_A8WBEgmxIGM";
-const RANGE = "65주차!A9:P58"; // A9부터 P58까지 (9행부터 데이터)
+const RANGE = "72주차(파흐트나2주차)!A9:O58"; // A9부터 O58까지 (9행부터 데이터)
 const API_KEY = "AIzaSyCjMpvOtzX2IY6DIHL7rfbWlJ7pZwuEcYM";
 
 // 컬럼 매핑 정의 (9번째 행부터 데이터로 처리)
