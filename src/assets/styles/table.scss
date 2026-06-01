@@ -1,4 +1,6 @@
-// src/styles/table.scss
+@use "sass:math";
+@use "sass:list";
+
 .rank-1 {
   background-color: rgba(255, 183, 77, 0.25);
   border-left: 3px solid #ffb74d;
@@ -71,7 +73,6 @@
   }
 }
 
-// 하이라이트 스타일
 :deep(tbody) {
   td {
     span.highlight {
@@ -83,7 +84,6 @@
   }
 }
 
-// 모바일 기본 스타일
 @media (max-width: 768px) {
   .table-wrap {
     overflow-x: auto;
@@ -106,14 +106,14 @@
   }
 }
 
-// 모바일 컬럼 믹스인
 @mixin mobile-columns($visible-columns) {
   @media (max-width: 768px) {
-    // 모든 컬럼 숨기기
     .col-no,
     .col-nick,
+    .col-nickname,
     .col-tag,
     .col-gal,
+    .col-guild,
     .col-pos,
     .col-bc,
     .col-boss,
@@ -122,15 +122,15 @@
     .col-raid,
     .col-rage,
     .col-rank,
+    .col-score,
     .col-etc {
       display: none;
     }
 
-    // 보일 컬럼만 표시
     @each $column in $visible-columns {
       .#{$column} {
         display: table-cell;
-        width: #{100% / length($visible-columns)};
+        width: #{math.div(100%, list.length($visible-columns))};
       }
     }
   }

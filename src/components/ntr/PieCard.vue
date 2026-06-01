@@ -1,6 +1,6 @@
 <template>
   <div class="pie-card">
-    <div class="pie-title">격노 구간</div>
+    <div class="pie-title">Activity Bands</div>
     <div class="container">
       <div class="pie-legend">
         <div v-for="(itm, idx) in pieData.labels" :key="`data-${idx}`">
@@ -21,9 +21,9 @@
 <script setup>
 import { computed, watch } from "vue";
 import PieChart from "./PieChart.vue";
-import { useAriseStore } from "@/store/arise";
+import { useNtrStore } from "@/store/ntr";
 
-const ariseStore = useAriseStore();
+const ntrStore = useNtrStore();
 /* const pieData = {
   labels: ["0-199", "200-249", "250-299", "300+"],
   datasets: [
@@ -36,7 +36,7 @@ const ariseStore = useAriseStore();
 
 // 격노 값의 최소/최대에 따라 4구간으로 자동 분할
 const pieData = computed(() => {
-  const rageKeys = Object.keys(ariseStore.rageCountData)
+  const rageKeys = Object.keys(ntrStore.rageCountData)
     .map(Number)
     .filter((v) => !isNaN(v))
     .sort((a, b) => a - b);
@@ -65,7 +65,7 @@ const pieData = computed(() => {
 
   // 각 rage 값을 해당 구간에 카운트
   rageKeys.forEach((rage) => {
-    const count = ariseStore.rageCountData[rage];
+    const count = ntrStore.rageCountData[rage];
     for (let i = 0; i < bins.length; i++) {
       if (rage >= bins[i].start && rage <= bins[i].end) {
         bins[i].count += count;

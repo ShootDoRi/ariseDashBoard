@@ -5,13 +5,13 @@
         :title="commonStore.seasonEndDateText"
         :value="commonStore.seasonEndDate"
       />
-      <StatCard title="남은 시간" :value="remainingTime" />
+      <StatCard title="Time Remaining" :value="remainingTime" />
       <!-- 모바일에서만 2개씩 한 줄에 -->
       <div class="stat-row" :class="{ mobile: isMobile }">
-        <StatCard title="격노 평균" :value="galleryStore.averageRage" />
+        <StatCard title="Average Activity" :value="galleryStore.averageRage" />
         <StatCard
-          title="레이드 참여수"
-          :value="`(50/${galleryStore.actualParticipants})`"
+          title="Active Members"
+          :value="`${galleryStore.actualParticipants}`"
         />
       </div>
       <PieCard />

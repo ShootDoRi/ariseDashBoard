@@ -62,5 +62,5 @@ const mergedList = computed(() => {
 </script>
 
 <style lang="scss">
-@include mobile-columns(("col-no", "col-gal", "col-rage", "col-rank"));
+@include mobile-columns(("col-no", "col-nick", "col-rage", "col-rank"));
 </style>

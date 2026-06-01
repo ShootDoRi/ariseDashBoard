@@ -13,7 +13,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@import "@/assets/styles/table.scss";`,
+        additionalData: `@use "@/assets/styles/table.scss" as *;`,
       },
     },
   },
@@ -24,6 +24,7 @@ export default defineConfig({
     drop: process.env.NODE_ENV === "production" ? ["console", "debugger"] : [],
   },
   build: {
-    minify: "esbuild", // terser 대신 esbuild 사용
+    emptyOutDir: false,
+    minify: "esbuild",
   },
 });

@@ -1,6 +1,6 @@
 <template>
   <div class="pie-card">
-    <div class="pie-title">격노 구간</div>
+    <div class="pie-title">Activity Bands</div>
     <div class="container">
       <div class="pie-legend">
         <div v-for="(itm, idx) in pieData.labels" :key="`data-${idx}`">

@@ -9,7 +9,7 @@ dayjs.extend(localizedFormat);
 export const useCommonStore = defineStore("common", () => {
   const endDate = "2026-01-01T08:30:00";
   const seasonEndDate = ref(dayjs(endDate).format("MM/DD HH:mm"));
-  const seasonEndDateText = ref("Season72 종료일");
+  const seasonEndDateText = ref("Reporting Cutoff");
 
   // search
   const searchState = reactive({

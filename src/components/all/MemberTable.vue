@@ -10,7 +10,7 @@
       <tbody>
         <TableRow
           v-for="member in filteredData"
-          :key="member.rank"
+          :key="member['순위']"
           :member="member"
           :columns="columns"
           :highlight="highlight"
@@ -58,5 +58,5 @@ const mergedList = computed(() => {
 </script>
 
 <style lang="scss">
-@include mobile-columns(("col-no", "col-gal", "col-rage", "col-rank"));
+@include mobile-columns(("col-rank", "col-guild", "col-nick", "col-rage"));
 </style>

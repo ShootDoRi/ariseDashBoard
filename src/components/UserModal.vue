@@ -1,21 +1,20 @@
 <template>
   <div class="dialog-backdrop" :class="{ active: commonStore.modalState.isOpen }" @click.self="closeDialog">
     <div class="dialog" :class="{ active: commonStore.modalState.isOpen }">
-      <h3>유저 상세 정보</h3>
+      <h3>Member Detail</h3>
       <ul>
-        <li><strong>인게임_닉:</strong> {{ userData?.nick }}</li>
-        <li><strong>태그:</strong> {{ userData?.tag }}</li>
-        <li><strong>갤닉:</strong> {{ userData?.gal }}</li>
-        <li><strong>직위:</strong> {{ userData?.pos }}</li>
-        <li><strong>배틀클래스:</strong> {{ userData?.배틀클래스 }}</li>
+        <li><strong>Member:</strong> {{ userData?.nick }}</li>
+        <li><strong>Handle:</strong> {{ userData?.tag }}</li>
+        <li><strong>Alias:</strong> {{ userData?.gal }}</li>
+        <li><strong>Role:</strong> {{ userData?.pos }}</li>
+        <li><strong>Level:</strong> {{ userData?.배틀클래스 }}</li>
       </ul>
-      <!-- 차트 컨테이너 수정 -->
       <div class="chart-container" v-if="weekChart.labels.length" style="margin-top: 24px">
         <div class="chart-scroll">
           <Line :data="chartData" :options="chartOptions" :style="chartStyle" />
         </div>
       </div>
-      <button @click="closeDialog">닫기</button>
+      <button @click="closeDialog">Close</button>
     </div>
   </div>
 </template>
@@ -34,7 +33,7 @@ const route = useRoute();
 
 function closeDialog() {
   commonStore.modalState.isOpen = false;
-  commonStore.modalState.user = null;
+  commonStore.modalState.userData = null;
 }
 
 const userData = computed(() => {
@@ -90,7 +89,7 @@ const chartData = computed(() => ({
   labels: weekChart.value.labels,
   datasets: [
     {
-      label: "주차별 격노수",
+      label: "Activity by period",
       data: weekChart.value.data,
       borderColor: "#4fd1c5",
       backgroundColor: "#4fd1c5",
@@ -109,7 +108,7 @@ const chartOptions = computed(() => {
     max: 160,
   };
 
-  if (route.path === "/gallery") {
+  if (route.path === "/community-alpha" || route.path === "/gallery") {
     scaleRange = {
       min: 125,
       max: 165,
@@ -140,10 +139,10 @@ const chartOptions = computed(() => {
         beginAtZero: true,
         min: scaleRange.min,
         max: scaleRange.max,
-        title: { display: true, text: "격노수" },
+        title: { display: true, text: "Activity" },
       },
       x: {
-        title: { display: true, text: "주차" },
+        title: { display: true, text: "Period" },
         // x축 라벨이 겹치지 않도록 설정
         ticks: {
           maxRotation: 45,

@@ -1,0 +1,24 @@
+{
+  "boardName": "Community Alpha",
+  "sheetId": "YOUR_PUBLIC_GOOGLE_SHEET_ID",
+  "range": "Members!A2:G",
+  "apiKeyEnv": "GOOGLE_SHEETS_API_KEY",
+  "outputPath": "src/json/gallery/sheet_data.json",
+  "startRow": 2,
+  "columnMapping": {
+    "순번": 0,
+    "인게임_닉": 1,
+    "태그": 2,
+    "직위": 3,
+    "배틀클래스": 4,
+    "길드레이드_점수": 5,
+    "격노": 6
+  },
+  "requiredFields": ["순번", "인게임_닉"],
+  "rank": {
+    "sourceField": "길드레이드_점수",
+    "targetField": "Rank",
+    "order": "desc",
+    "emptyRankValue": ""
+  }
+}

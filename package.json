@@ -1,22 +1,26 @@
 {
-  "name": "arise-dashboard",
-  "private": true,
-  "version": "0.0.0",
+  "name": "community-ops-dashboard",
+  "version": "0.1.0",
+  "description": "Open-source dashboard template for community maintainers who manage spreadsheet-based rankings, members, and activity.",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "test": "node tests/sync-core.test.js",
     "preview": "vite preview",
-    "arise": "node ariseParser",
-    "ariseFlow": "node ariseFlowParser",
-    "gallery": "node galleryParser",
-    "galleryFlow": "node galleryFlowParser",
-    "ntr": "node ntrParser",
-    "ntrFlow": "node ntrFlowParser",
-    "all": "node allParser"
+    "sync": "node scripts/sync.js",
+    "secret-scan": "node scripts/secret-scan.js",
+    "check": "npm run test && npm run build && npm run secret-scan"
   },
+  "keywords": [
+    "community",
+    "dashboard",
+    "google-sheets",
+    "operations",
+    "vue"
+  ],
   "dependencies": {
-    "@vercel/analytics": "^1.5.0",
     "chart.js": "^4.5.0",
     "chartjs-plugin-datalabels": "^2.2.0",
     "dayjs": "^1.11.13",

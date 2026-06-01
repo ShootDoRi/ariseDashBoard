@@ -2,9 +2,8 @@
   <nav class="sidebar" :class="{ open: isOpen }">
     <div class="logo">
       <span class="hamburger" @click="toggleSidebar" v-if="isMobile">☰</span>
-      <span v-else>DASH BOARD</span>
+      <span v-else>COMMUNITY OPS</span>
     </div>
-    <!-- 서치바를 사이드바 상단에 추가 -->
     <div class="sidebar-search">
       <input
         class="search"
@@ -17,10 +16,6 @@
       <div class="drawer" v-if="isMobile && isOpen">
         <button class="drawer-close" @click="closeSidebar">✕</button>
         <ul class="drawer-menu">
-          <!-- <li>나혼렙갤러리(개발중)</li>
-          <li class="active">ARISE</li>
-          <li>NTR(개발중)</li>
-          <li>Settings(개발중)</li> -->
           <li
             v-for="menu in menuList"
             :key="menu.name"
@@ -33,10 +28,6 @@
       </div>
     </transition>
     <ul class="menu" v-if="!isMobile">
-      <!-- <li>나혼렙갤러리(개발중)</li>
-      <li class="active">ARISE</li>
-      <li>NTR(개발중)</li>
-      <li>Settings(개발중)</li> -->
       <li
         v-for="menu in menuList"
         :key="menu.name"
@@ -50,70 +41,59 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, onUnmounted } from "vue";
-import { useRouter, useRoute } from "vue-router"; // 추가
+import { ref, reactive, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { useAriseStore } from "../store/arise";
 import { useGalleryStore } from "../store/gallery";
-import { useNtrStore } from "../store/ntr"; // NTR 스토어 추가
+import { useNtrStore } from "../store/ntr";
 import { useAllStore } from "../store/all";
 import { useIsMobile } from "../composables/useIsMobile";
+
 const isMobile = useIsMobile();
 const ariseStore = useAriseStore();
 const galleryStore = useGalleryStore();
-const ntrStore = useNtrStore(); // NTR 스토어 인스턴스 생성
-const allStore = useAllStore(); // 통합 스토어 인스턴스 생성
-
+const ntrStore = useNtrStore();
+const allStore = useAllStore();
 const isOpen = ref(false);
-const isTabletOrLess = ref(false);
-const router = useRouter(); // 추가
+const router = useRouter();
 const route = useRoute();
 
-// 현재 경로에 따라 검색 상태를 반환
+function getRouteStore(path) {
+  if (path.startsWith("/community-beta") || path.startsWith("/arise")) {
+    return ariseStore;
+  }
+  if (path.startsWith("/community-gamma") || path.startsWith("/ntr")) {
+    return ntrStore;
+  }
+  if (path.startsWith("/ranking") || path.startsWith("/all")) {
+    return allStore;
+  }
+  return galleryStore;
+}
+
 const searchKeyword = computed({
   get() {
-    if (route.path.startsWith("/gallery"))
-      return galleryStore.searchState.keyword;
-    if (route.path.startsWith("/arise")) return ariseStore.searchState.keyword;
-    if (route.path.startsWith("/ntr")) return ntrStore.searchState.keyword; // NTR 경로에 대한 검색 상태
-    if (route.path.startsWith("/all")) return allStore.searchState.keyword; // 통합 경로에 대한 검색 상태
-    return "";
+    return getRouteStore(route.path).searchState.keyword;
   },
   set(val) {
-    if (route.path.startsWith("/gallery"))
-      galleryStore.searchState.keyword = val;
-    else if (route.path.startsWith("/arise"))
-      ariseStore.searchState.keyword = val;
-    else if (route.path.startsWith("/ntr"))
-      ntrStore.searchState.keyword = val; // NTR 경로에 대한 검색 상태 설정
-    else if (route.path.startsWith("/all"))
-      allStore.searchState.keyword = val; // 통합 경로에 대한 검색 상태 설정
-    else return;
+    getRouteStore(route.path).searchState.keyword = val;
   },
 });
 
 const menuList = reactive([
-  { name: "나혼렙갤러리", path: "/gallery" },
-  { name: "ARISE", path: "/arise" },
-  { name: "NTR", path: "/ntr" },
-  { name: "통합순위", path: "/all" },
-  /* { name: "Settings(개발중)", path: "/settings" }, */
+  { name: "Community Alpha", path: "/community-alpha" },
+  { name: "Community Beta", path: "/community-beta" },
+  { name: "Community Gamma", path: "/community-gamma" },
+  { name: "Overall Ranking", path: "/ranking" },
 ]);
 
 async function menuActor(path) {
   try {
     await router.push(path);
-    isOpen.value = false; // 모바일에서 메뉴 클릭 시 사이드바 닫기
-  } catch (error) {
-    isOpen.value = false; // 모바일에서 메뉴 클릭 시 사이드바 닫기
+  } finally {
+    isOpen.value = false;
   }
 }
-
-console.log("route ==> ", route);
-
-/* function handleResize() {
-  isMobile.value = window.innerWidth <= 768;
-  if (!isMobile.value) isOpen.value = false;
-} */
 
 function toggleSidebar() {
   isOpen.value = !isOpen.value;
@@ -124,14 +104,6 @@ function closeSidebar() {
 function onInput(e) {
   searchKeyword.value = e.target.value;
 }
-
-onMounted(() => {
-  /* handleResize();
-  window.addEventListener("resize", handleResize); */
-});
-onUnmounted(() => {
-  //window.removeEventListener("resize", handleResize);
-});
 </script>
 
 <style scoped>
@@ -152,11 +124,11 @@ li {
   cursor: pointer;
 }
 .logo {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: bold;
   margin-bottom: 16px;
   text-align: center;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   position: relative;
   display: flex;
   align-items: center;
@@ -192,12 +164,18 @@ li {
   padding: 0;
   margin: 0;
 }
+.menu li,
+.drawer-menu li {
+  text-align: left;
+}
+.menu li {
+  padding: 14px 18px;
+}
 .menu li.active,
 .menu li:hover {
   background: #23232e;
 }
 
-/* drawer는 왼쪽에서 슬라이드, 220px만 차지 */
 .drawer {
   position: fixed;
   top: 0;
@@ -278,8 +256,7 @@ li {
     justify-content: flex-start;
     align-items: center;
     height: 56px;
-    //width: auto;
-    max-width: fit-content; /* 추가: 내용에 맞게 너비 조정 */
+    max-width: fit-content;
     display: flex;
   }
   .sidebar-search {
@@ -288,12 +265,12 @@ li {
     height: 56px;
     align-items: center;
     display: flex;
-    justify-content: center; /* 추가: 가운데 정렬 */
+    justify-content: center;
   }
   .search {
     width: 100%;
     min-width: 0;
-    max-width: 340px; /* 추가: 너무 넓어지지 않게 */
+    max-width: 340px;
     font-size: 1rem;
     padding: 8px 12px;
   }
@@ -310,7 +287,6 @@ li {
   .menu {
     display: none;
   }
-  /* drawer는 220px만 차지, 화면 전체 덮지 않음 */
   .drawer {
     width: 220px;
     height: 100vh;

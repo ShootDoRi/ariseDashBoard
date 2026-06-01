@@ -21,6 +21,9 @@ export function useMemberTable(storeType) {
       : storeType === "all"
       ? useAllStore()
       : useNtrStore();
+  const tableRows = computed(() =>
+    storeType === "ntr" ? store.thisWeekData : store.tableData
+  );
 
   const sortKey = ref("");
   const sortOrder = ref(1);
@@ -49,7 +52,7 @@ export function useMemberTable(storeType) {
 
   const filteredData = computed(() => {
     const keyword = store.searchState.keyword.trim();
-    let data = store.tableData.map((row) => ({
+    let data = tableRows.value.map((row) => ({
       ...row,
       기타사항: calcAlert(row),
     }));
@@ -105,7 +108,7 @@ export function useMemberTable(storeType) {
   }
 
   function openUserModal(member, mergedList) {
-    const keyField = storeType === "arise" ? "태그" : "인게임_닉";
+    const keyField = storeType === "gallery" ? "인게임_닉" : "태그";
     const mergedData = mergedList.find((m) => m[keyField] === member[keyField]);
     commonStore.modalState.userData = { ...mergedData, ...member };
     commonStore.modalState.isOpen = true;
