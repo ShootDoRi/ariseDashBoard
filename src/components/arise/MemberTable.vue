@@ -10,7 +10,7 @@
       <tbody>
         <TableRow
           v-for="member in filteredData"
-          :key="member.no"
+          :key="member['태그'] || member['순번']"
           :member="member"
           :columns="columns"
           :highlight="highlight"
@@ -23,14 +23,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from "vue";
+import { computed } from "vue";
 import { useMemberTable } from "@/composables/useMemberTable";
 import TableHeader from "@/components/common/table/TableHeader.vue";
 import TableRow from "@/components/common/table/TableRow.vue";
-import dayjs from "dayjs";
-/* import sheetDataFlow1 from "@/json/arise/flow/sheet_data_flow.json";
-import sheetDataFlow2 from "@/json/arise/flow/sheet_data_flow2.json";
-import sheetDataArise from "@/json/arise/flow/sheet_data _45주차.json"; */
 import flowData from "@/json/arise/flow/sheet_data_flow_final.json";
 
 const {
@@ -42,14 +38,11 @@ const {
   calcAlert,
   highlight,
   openUserModal,
-  getRankClass,
 } = useMemberTable("arise");
-
-const list = ref([...flowData]);
 
 const mergedList = computed(() => {
   const map = new Map();
-  list.value.forEach((item) => {
+  flowData.forEach((item) => {
     const tag = item["태그"];
     if (!map.has(tag)) {
       map.set(tag, { ...item });
@@ -62,5 +55,5 @@ const mergedList = computed(() => {
 </script>
 
 <style lang="scss">
-@include mobile-columns(("col-no", "col-nick", "col-rage", "col-rank"));
+@include mobile-columns(("col-no", "col-tag", "col-raid", "col-rank"));
 </style>

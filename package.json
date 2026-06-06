@@ -1,7 +1,7 @@
 {
-  "name": "community-ops-dashboard",
+  "name": "arise-guild-ranking",
   "version": "0.1.0",
-  "description": "Open-source dashboard template for community maintainers who manage spreadsheet-based rankings, members, and activity.",
+  "description": "Open-source dashboard template for Solo Leveling: ARISE guild rankings and weekly score history.",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -14,10 +14,11 @@
     "check": "npm run test && npm run build && npm run secret-scan"
   },
   "keywords": [
-    "community",
+    "arise",
     "dashboard",
+    "guild",
     "google-sheets",
-    "operations",
+    "ranking",
     "vue"
   ],
   "dependencies": {

@@ -1,12 +1,12 @@
 <template>
   <div class="dashboard">
     <div class="top-row">
-      <StatCard :title="commonStore.seasonEndDateText" :value="commonStore.seasonEndDate" />
-      <StatCard title="Time Remaining" :value="remainingTime" />
+      <StatCard title="ARISE Guild Ranking" :value="commonStore.seasonEndDate" />
+      <StatCard title="Weekly Sync Window" :value="remainingTime" />
       <!-- 모바일에서만 2개씩 한 줄에 -->
       <div class="stat-row" :class="{ mobile: isMobile }">
-        <StatCard title="Average Activity" :value="ariseStore.averageRage" />
-        <StatCard title="Active Members" :value="`${ariseStore.actualParticipants}`" />
+        <StatCard title="Average Score" :value="ariseStore.averageScore" />
+        <StatCard title="Ranked Users" :value="`${ariseStore.actualParticipants}`" />
       </div>
       <PieCard />
     </div>

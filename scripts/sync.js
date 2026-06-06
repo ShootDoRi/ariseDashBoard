@@ -1,7 +1,13 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import { loadSyncConfig, mapRows, readJsonFile, syncRows } from "./sync-core.js";
+import {
+  loadSyncConfig,
+  mapRows,
+  readJsonFile,
+  resolveSpreadsheetId,
+  syncRows,
+} from "./sync-core.js";
 
 function parseArgs(argv) {
   const args = {
@@ -43,18 +49,19 @@ Set GOOGLE_SHEETS_API_KEY when syncing directly from Google Sheets.`);
 async function fetchGoogleSheetRows(config) {
   const apiKeyEnv = config.apiKeyEnv || "GOOGLE_SHEETS_API_KEY";
   const apiKey = process.env[apiKeyEnv];
+  const spreadsheetId = resolveSpreadsheetId(config);
 
   if (!apiKey) {
     throw new Error(`Missing ${apiKeyEnv}. Add it to your shell or .env file before syncing Google Sheets.`);
   }
-  if (!config.sheetId || !config.range) {
-    throw new Error("sheetId and range are required when no local input file is provided.");
+  if (!spreadsheetId || !config.range) {
+    throw new Error("sheetUrl or sheetId, plus range, are required when no local input file is provided.");
   }
 
   const { google } = await import("googleapis");
   const sheets = google.sheets({ version: "v4", auth: apiKey });
   const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: config.sheetId,
+    spreadsheetId,
     range: config.range,
   });
 
@@ -86,6 +93,9 @@ export async function runSyncFromCli(argv = process.argv.slice(2)) {
   const result = syncRows(rows, config);
   console.log(`Synced ${result.data.length} rows for ${config.boardName || "community board"}.`);
   console.log(`Wrote ${result.outputPath}.`);
+  if (result.historyOutputPath) {
+    console.log(`Wrote ${result.historyOutputPath}.`);
+  }
   return result;
 }
 

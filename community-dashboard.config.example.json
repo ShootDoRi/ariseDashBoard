@@ -1,20 +1,21 @@
 {
-  "boardName": "Community Alpha",
-  "sheetId": "YOUR_PUBLIC_GOOGLE_SHEET_ID",
-  "range": "Members!A2:G",
+  "boardName": "ARISE Guild Ranking",
+  "sheetUrl": "https://docs.google.com/spreadsheets/d/{YOUR_ARISE_GUILD_SHEET_ID}/edit",
+  "sheetId": "YOUR_ARISE_GUILD_SHEET_ID",
+  "range": "Weekly!A2:D",
+  "weekLabel": "52주차",
   "apiKeyEnv": "GOOGLE_SHEETS_API_KEY",
-  "outputPath": "src/json/gallery/sheet_data.json",
+  "outputPath": "src/json/arise/sheet_data.json",
+  "historyOutputPath": "src/json/arise/flow/sheet_data_flow_final.json",
   "startRow": 2,
   "columnMapping": {
     "순번": 0,
-    "인게임_닉": 1,
-    "태그": 2,
-    "직위": 3,
-    "배틀클래스": 4,
-    "길드레이드_점수": 5,
-    "격노": 6
+    "인게임_닉": 0,
+    "태그": 1,
+    "길드레이드_점수": 2,
+    "Rank": 3
   },
-  "requiredFields": ["순번", "인게임_닉"],
+  "requiredFields": ["순번", "태그", "길드레이드_점수"],
   "rank": {
     "sourceField": "길드레이드_점수",
     "targetField": "Rank",

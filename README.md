@@ -1,15 +1,21 @@
-# Community Ops Dashboard
+# ARISE Guild Ranking
 
-Community Ops Dashboard is an open-source Vue dashboard template for community maintainers who manage rankings, members, and activity through Google Sheets or exported spreadsheet rows.
+ARISE Guild Ranking is an open-source Vue dashboard template for Solo Leveling: ARISE guild maintainers who manage weekly raid rankings through Google Sheets.
 
-The project started as a live community operations dashboard and has been generalized with anonymous sample data, a config-driven sync command, CI, tests, and maintainer docs.
+Guilds paste a Google Sheet URL, fill columns in this order, and run sync:
+
+```text
+아이디, 태그, 점수, 순위
+```
+
+The sync command writes the current ranking JSON, recalculates rank from score, and updates weekly score history by matching users on `태그`.
 
 ## Features
 
-- Spreadsheet-to-JSON sync with configurable column mapping.
-- Member, ranking, score, and activity dashboard views.
-- Search, sortable tables, member detail modal, and activity charts.
-- Anonymous sample data that can be used without a private sheet.
+- Google Sheets URL or sheet ID sync with configurable column mapping.
+- Weekly ARISE guild ranking table with ID, tag, score, and calculated rank.
+- Tag-matched member detail modal with weekly score history charts.
+- Anonymous four-column sample data that can be used without a private sheet.
 - Secret scan for Google API keys and hardcoded private sheet identifiers.
 
 ## Quick Start
@@ -31,7 +37,7 @@ npm run sync         # Sync configured spreadsheet rows to JSON
 npm run secret-scan  # Check for committed Google keys or sheet IDs
 ```
 
-## Sync A Sheet
+## Sync A Guild Sheet
 
 Copy the examples and fill in your own public or restricted sheet details:
 
@@ -40,6 +46,21 @@ cp .env.example .env
 cp community-dashboard.config.example.json community-dashboard.config.json
 npm run sync -- --config community-dashboard.config.json
 ```
+
+Set these fields in `community-dashboard.config.json`:
+
+```json
+{
+  "sheetUrl": "https://docs.google.com/spreadsheets/d/{YOUR_ARISE_GUILD_SHEET_ID}/edit",
+  "sheetId": "YOUR_ARISE_GUILD_SHEET_ID",
+  "range": "Weekly!A2:D",
+  "weekLabel": "52주차",
+  "outputPath": "src/json/arise/sheet_data.json",
+  "historyOutputPath": "src/json/arise/flow/sheet_data_flow_final.json"
+}
+```
+
+`sheetUrl` is preferred. `sheetId` remains as a fallback for maintainers who only want to paste the spreadsheet ID.
 
 For an offline dry run against anonymous rows:
 
@@ -51,22 +72,26 @@ Set `GOOGLE_SHEETS_API_KEY` in your shell or `.env` when syncing from Google She
 
 ## Data Model
 
-The UI currently preserves the original internal field keys for compatibility with the existing components, while the public labels are generic:
+The ARISE sheet should have four columns:
+
+- `아이디`: display ID, also mapped to internal `순번` and `인게임_닉`.
+- `태그`: stable user tag used to match weekly history.
+- `점수`: weekly guild raid score, mapped to `길드레이드_점수`.
+- `순위`: optional input rank. Sync overwrites internal `Rank` from score.
+
+The UI preserves these internal field keys for compatibility with existing components:
 
 - `순번`: member id
-- `인게임_닉`: member name
-- `태그`: handle
-- `직위`: role
-- `배틀클래스`: level or segment
+- `인게임_닉`: member id fallback for legacy modal display
+- `태그`: user tag
 - `길드레이드_점수`: score
-- `격노`: activity metric
 - `Rank`: calculated rank
 
-Use `columnMapping` in `community-dashboard.config.json` to map any spreadsheet schema into those fields.
+When `weekLabel` and `historyOutputPath` are configured, sync updates `src/json/arise/flow/sheet_data_flow_final.json` by `태그` and preserves older week keys.
 
 ## Codex For OSS Use
 
-If accepted for OpenAI Codex OSS support, API credits and Codex Security would be used for PR review, issue triage, release notes, security review, and generating spreadsheet adapters for new community schemas. See [docs/codex-for-oss-notes.md](docs/codex-for-oss-notes.md).
+If accepted for OpenAI Codex OSS support, API credits and Codex Security would be used for PR review, issue triage, release notes, security review, and maintaining safe Google Sheets adapters for ARISE guild workflows. See [docs/codex-for-oss-notes.md](docs/codex-for-oss-notes.md).
 
 ## License
 

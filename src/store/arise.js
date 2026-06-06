@@ -10,39 +10,35 @@ export const useAriseStore = defineStore("arise", () => {
     }),
   ]);
 
-  // 평균 격노 계산 (숫자 변환 및 NaN 방지)
-  const averageRage_ = computed(() => {
-    const rageArr = tableData
-      .map((m) => Number(m["격노"]))
-      .filter((v) => !isNaN(v));
-    if (rageArr.length === 0) return 0;
-    return (rageArr.reduce((a, b) => a + b, 0) / rageArr.length).toFixed(2);
+  function parseScore(value) {
+    if (value === undefined || value === null || value === "") return Number.NaN;
+    return Number(String(value).replace(/,/g, ""));
+  }
+
+  const scoreValues = computed(() => {
+    return tableData.map((m) => parseScore(m["길드레이드_점수"])).filter((v) => !isNaN(v));
   });
 
-  const averageRage = computed(() => {
-    // 격노 값이 실제로 존재하는 데이터만 평균에 포함
-    const rageArr = tableData
-      .filter(
-        (m) => m["격노"] !== undefined && m["격노"] !== null && m["격노"] !== ""
-      )
-      .map((m) => Number(m["격노"]))
-      .filter((v) => !isNaN(v));
-    if (rageArr.length === 0) return 0;
-    return (rageArr.reduce((a, b) => a + b, 0) / rageArr.length).toFixed(2);
+  const averageScore = computed(() => {
+    if (scoreValues.value.length === 0) return "0";
+    const average = scoreValues.value.reduce((a, b) => a + b, 0) / scoreValues.value.length;
+    return Math.round(average).toLocaleString("ko-KR");
   });
+
+  const averageRage = averageScore;
 
   // 길드레이드 실제 참여자 수
   const actualParticipants = computed(() => {
-    return tableData.filter((m) => !!m["격노"] == true).length;
+    return scoreValues.value.length;
   });
 
-  // 격노별 개수 집계
+  // 점수별 개수 집계
   const rageCountData = computed(() => {
     const count = {};
     tableData.forEach((m) => {
-      const rage = m["격노"];
-      if (rage !== undefined && rage !== null && rage !== "") {
-        count[rage] = (count[rage] || 0) + 1;
+      const score = parseScore(m["길드레이드_점수"]);
+      if (!isNaN(score)) {
+        count[score] = (count[score] || 0) + 1;
       }
     });
     return count;
@@ -63,6 +59,7 @@ export const useAriseStore = defineStore("arise", () => {
 
   return {
     tableData,
+    averageScore,
     averageRage,
     rageCountData,
     actualParticipants,

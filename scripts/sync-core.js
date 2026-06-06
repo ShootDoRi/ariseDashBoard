@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
 export function readJsonFile(filePath) {
@@ -23,6 +23,37 @@ export function getCell(row, selector) {
 export function parseScore(value) {
   if (value == null || value === "") return Number.NaN;
   return Number(String(value).replace(/,/g, ""));
+}
+
+export function normalizeSpreadsheetId(value) {
+  if (!value) return "";
+
+  const id = String(value).trim();
+  if (!id || /[{}]/.test(id) || id.toUpperCase().includes("YOUR_")) {
+    return "";
+  }
+  return id;
+}
+
+export function extractSpreadsheetIdFromUrl(sheetUrl) {
+  if (!sheetUrl) return "";
+
+  const value = String(sheetUrl).trim();
+  const matchPath = (path) => {
+    const match = path.match(/\/spreadsheets\/d\/([^/?#]+)/);
+    return match ? normalizeSpreadsheetId(decodeURIComponent(match[1])) : "";
+  };
+
+  try {
+    const url = new URL(value);
+    return matchPath(url.pathname);
+  } catch {
+    return matchPath(value);
+  }
+}
+
+export function resolveSpreadsheetId(config = {}) {
+  return extractSpreadsheetIdFromUrl(config.sheetUrl) || normalizeSpreadsheetId(config.sheetId);
 }
 
 export function isMappedRowEmpty(row, fields) {
@@ -109,14 +140,59 @@ export function writeJsonFile(filePath, data) {
   return resolvedPath;
 }
 
+export function mergeWeeklyHistory(currentRows, historyRows = [], config = {}) {
+  const weekLabel = String(config.weekLabel || "").trim();
+  if (!weekLabel) return historyRows;
+
+  const scoreField = config.rank?.sourceField || "길드레이드_점수";
+  const unkeyedRows = [];
+  const byTag = new Map();
+
+  historyRows.forEach((row) => {
+    const tag = String(row?.["태그"] ?? "").trim();
+    if (tag) {
+      byTag.set(tag, { ...row });
+    } else {
+      unkeyedRows.push({ ...row });
+    }
+  });
+
+  currentRows.forEach((row) => {
+    const tag = String(row?.["태그"] ?? "").trim();
+    if (!tag) return;
+
+    const previous = byTag.get(tag) || {};
+    const next = { ...previous };
+    ["순번", "인게임_닉", "태그"].forEach((field) => {
+      if (row[field] !== undefined && row[field] !== null && String(row[field]).trim() !== "") {
+        next[field] = row[field];
+      }
+    });
+    next[weekLabel] = row[scoreField] ?? "";
+    byTag.set(tag, next);
+  });
+
+  return [...unkeyedRows, ...byTag.values()];
+}
+
 export function syncRows(rows, config) {
   const data = mapRows(rows, config);
   if (!config.outputPath) {
     throw new Error("outputPath is required.");
   }
   const outputPath = writeJsonFile(config.outputPath, data);
-  return {
+  const result = {
     data,
     outputPath,
   };
+
+  if (config.weekLabel && config.historyOutputPath) {
+    const resolvedHistoryPath = resolve(config.historyOutputPath);
+    const historyRows = existsSync(resolvedHistoryPath) ? readJsonFile(resolvedHistoryPath) : [];
+    const historyData = mergeWeeklyHistory(data, historyRows, config);
+    result.historyOutputPath = writeJsonFile(resolvedHistoryPath, historyData);
+    result.historyData = historyData;
+  }
+
+  return result;
 }

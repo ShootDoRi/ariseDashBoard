@@ -1,13 +1,15 @@
 <template>
   <div class="dialog-backdrop" :class="{ active: commonStore.modalState.isOpen }" @click.self="closeDialog">
     <div class="dialog" :class="{ active: commonStore.modalState.isOpen }">
-      <h3>Member Detail</h3>
+      <h3>{{ isAriseRoute ? "ARISE Score Detail" : "Member Detail" }}</h3>
       <ul>
-        <li><strong>Member:</strong> {{ userData?.nick }}</li>
-        <li><strong>Handle:</strong> {{ userData?.tag }}</li>
-        <li><strong>Alias:</strong> {{ userData?.gal }}</li>
-        <li><strong>Role:</strong> {{ userData?.pos }}</li>
-        <li><strong>Level:</strong> {{ userData?.배틀클래스 }}</li>
+        <li><strong>{{ isAriseRoute ? "ID" : "Member" }}:</strong> {{ userData?.nick }}</li>
+        <li><strong>Tag:</strong> {{ userData?.tag }}</li>
+        <li v-if="isAriseRoute"><strong>Score:</strong> {{ userData?.score }}</li>
+        <li><strong>Rank:</strong> {{ userData?.rank }}</li>
+        <li v-if="!isAriseRoute"><strong>Alias:</strong> {{ userData?.gal }}</li>
+        <li v-if="!isAriseRoute"><strong>Role:</strong> {{ userData?.pos }}</li>
+        <li v-if="!isAriseRoute"><strong>Level:</strong> {{ userData?.배틀클래스 }}</li>
       </ul>
       <div class="chart-container" v-if="weekChart.labels.length" style="margin-top: 24px">
         <div class="chart-scroll">
@@ -30,6 +32,7 @@ Chart.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, L
 
 const commonStore = useCommonStore();
 const route = useRoute();
+const isAriseRoute = computed(() => route.path === "/community-beta" || route.path === "/arise");
 
 function closeDialog() {
   commonStore.modalState.isOpen = false;
@@ -46,6 +49,7 @@ const userData = computed(() => {
     gal: userData["갤닉"],
     pos: userData["직위"],
     rank: userData["Rank"],
+    score: userData["길드레이드_점수"],
     배틀클래스: userData["배틀클래스"],
   };
 });
@@ -89,7 +93,7 @@ const chartData = computed(() => ({
   labels: weekChart.value.labels,
   datasets: [
     {
-      label: "Activity by period",
+      label: isAriseRoute.value ? "Weekly score" : "Activity by period",
       data: weekChart.value.data,
       borderColor: "#4fd1c5",
       backgroundColor: "#4fd1c5",
@@ -103,7 +107,7 @@ const chartData = computed(() => ({
 }));
 
 const chartOptions = computed(() => {
-  let scaleRange = {
+  let scaleRange = isAriseRoute.value ? {} : {
     min: 110,
     max: 160,
   };
@@ -136,13 +140,13 @@ const chartOptions = computed(() => {
     },
     scales: {
       y: {
-        beginAtZero: true,
+        beginAtZero: !isAriseRoute.value,
         min: scaleRange.min,
         max: scaleRange.max,
-        title: { display: true, text: "Activity" },
+        title: { display: true, text: isAriseRoute.value ? "Score" : "Activity" },
       },
       x: {
-        title: { display: true, text: "Period" },
+        title: { display: true, text: isAriseRoute.value ? "Week" : "Period" },
         // x축 라벨이 겹치지 않도록 설정
         ticks: {
           maxRotation: 45,

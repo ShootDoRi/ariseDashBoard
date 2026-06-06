@@ -3,7 +3,7 @@ import { computed } from "vue";
 const ALL_COLUMNS = {
   순번: { key: "순번", label: "ID", class: "col-no" },
   인게임_닉: { key: "인게임_닉", label: "Member", class: "col-nick" },
-  태그: { key: "태그", label: "Handle", class: "col-tag" },
+  태그: { key: "태그", label: "Tag", class: "col-tag" },
   갤닉: { key: "갤닉", label: "Alias", class: "col-gal" },
   직위: { key: "직위", label: "Role", class: "col-pos" },
   배틀클래스: { key: "배틀클래스", label: "Level", class: "col-bc" },
@@ -28,18 +28,9 @@ const ALL_COLUMNS = {
 const PRESETS = {
   arise: [
     "순번",
-    "인게임_닉",
     "태그",
-    //"갤닉",
-    "직위",
-    "배틀클래스",
-    "보스공헌도",
-    "미션공헌도",
-    "공헌도합",
     "길드레이드_점수",
-    "격노",
     "Rank",
-    "기타사항",
   ],
   gallery: [
     "순번",

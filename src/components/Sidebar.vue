@@ -2,7 +2,7 @@
   <nav class="sidebar" :class="{ open: isOpen }">
     <div class="logo">
       <span class="hamburger" @click="toggleSidebar" v-if="isMobile">☰</span>
-      <span v-else>COMMUNITY OPS</span>
+      <span v-else>ARISE OPS</span>
     </div>
     <div class="sidebar-search">
       <input
@@ -82,7 +82,7 @@ const searchKeyword = computed({
 
 const menuList = reactive([
   { name: "Community Alpha", path: "/community-alpha" },
-  { name: "Community Beta", path: "/community-beta" },
+  { name: "ARISE Guild Ranking", path: "/community-beta" },
   { name: "Community Gamma", path: "/community-gamma" },
   { name: "Overall Ranking", path: "/ranking" },
 ]);

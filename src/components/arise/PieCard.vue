@@ -1,6 +1,6 @@
 <template>
   <div class="pie-card">
-    <div class="pie-title">Activity Bands</div>
+    <div class="pie-title">Score Bands</div>
     <div class="container">
       <div class="pie-legend">
         <div v-for="(itm, idx) in pieData.labels" :key="`data-${idx}`">
@@ -34,7 +34,7 @@ const ariseStore = useAriseStore();
   ],
 }; */
 
-// 격노 값의 최소/최대에 따라 4구간으로 자동 분할
+// 점수 값의 최소/최대에 따라 4구간으로 자동 분할
 const pieData = computed(() => {
   const rageKeys = Object.keys(ariseStore.rageCountData)
     .map(Number)

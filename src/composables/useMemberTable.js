@@ -37,6 +37,13 @@ export function useMemberTable(storeType) {
     }
   }
 
+  function parseSortableNumber(value) {
+    if (value === undefined || value === null || value === "" || value === "#N/A") {
+      return Number.NaN;
+    }
+    return Number(String(value).replace(/,/g, ""));
+  }
+
   function calcAlert(data) {
     const rage = Number(data["격노"]);
     const total = Number(data["공헌도합"]?.replace(/,/g, "") || 0);
@@ -71,15 +78,15 @@ export function useMemberTable(storeType) {
       const aVal = sortKey.value === "기타사항" ? a.기타사항 : a[sortKey.value];
       const bVal = sortKey.value === "기타사항" ? b.기타사항 : b[sortKey.value];
 
-      if (["격노", "Rank"].includes(sortKey.value)) {
-        const isEmpty = (v) =>
-          v === undefined || v === null || v === "" || v === "#N/A";
-        const aEmpty = isEmpty(aVal);
-        const bEmpty = isEmpty(bVal);
+      if (["격노", "길드레이드_점수", "Rank"].includes(sortKey.value)) {
+        const aNumber = parseSortableNumber(aVal);
+        const bNumber = parseSortableNumber(bVal);
+        const aEmpty = Number.isNaN(aNumber);
+        const bEmpty = Number.isNaN(bNumber);
         if (aEmpty && !bEmpty) return 1;
         if (!aEmpty && bEmpty) return -1;
         if (aEmpty && bEmpty) return 0;
-        return (Number(aVal) - Number(bVal)) * sortOrder.value;
+        return (aNumber - bNumber) * sortOrder.value;
       }
 
       if (sortKey.value === "기타사항") {
