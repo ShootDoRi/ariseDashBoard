@@ -64,6 +64,35 @@ export function hasRequiredFields(row, requiredFields) {
   return requiredFields.every((field) => String(row[field] ?? "").trim() !== "");
 }
 
+export function createSchemaWarning(code, field, rowNumber) {
+  const warning = {
+    code,
+    field: field || "_row",
+  };
+
+  if (Number.isInteger(rowNumber)) {
+    warning.rowNumber = rowNumber;
+  }
+
+  return warning;
+}
+
+function hasOwnMapping(columnMapping, field) {
+  return Object.prototype.hasOwnProperty.call(columnMapping, field);
+}
+
+function isConfiguredSelector(selector) {
+  return selector !== undefined && selector !== null && String(selector).trim() !== "";
+}
+
+function addMappingWarning(warnings, seenWarnings, code, field) {
+  const key = `${code}:${field}`;
+  if (seenWarnings.has(key)) return;
+
+  warnings.push(createSchemaWarning(code, field));
+  seenWarnings.add(key);
+}
+
 export function applyRanking(rows, rankConfig = {}) {
   if (!rankConfig.sourceField) return rows;
 
@@ -104,7 +133,7 @@ export function applyRanking(rows, rankConfig = {}) {
   return rankedRows;
 }
 
-export function mapRows(rows, config) {
+export function mapRowsWithWarnings(rows, config) {
   const columnMapping = config.columnMapping || {};
   const fields = Object.keys(columnMapping);
 
@@ -114,6 +143,23 @@ export function mapRows(rows, config) {
 
   const requiredFields = config.requiredFields || [fields[0]];
   const startRow = Number(config.startRow || 1);
+  const warnings = [];
+  const seenMappingWarnings = new Set();
+
+  requiredFields.forEach((field) => {
+    if (!hasOwnMapping(columnMapping, field) || !isConfiguredSelector(columnMapping[field])) {
+      addMappingWarning(warnings, seenMappingWarnings, "missing-column-mapping", field);
+    }
+  });
+
+  if (
+    config.rank?.sourceField &&
+    (!hasOwnMapping(columnMapping, config.rank.sourceField) ||
+      !isConfiguredSelector(columnMapping[config.rank.sourceField]))
+  ) {
+    addMappingWarning(warnings, seenMappingWarnings, "missing-column-mapping", config.rank.sourceField);
+  }
+
   const mappedRows = rows.map((row, index) => {
     const mapped = {};
     fields.forEach((field) => {
@@ -125,12 +171,35 @@ export function mapRows(rows, config) {
 
   const validRows = mappedRows.filter((row) => {
     if (config.skipEmptyRows !== false && isMappedRowEmpty(row, fields)) {
+      warnings.push(createSchemaWarning("empty-row", "_row", row._originalRowNumber));
       return false;
     }
-    return hasRequiredFields(row, requiredFields);
+
+    const missingFields = requiredFields.filter((field) => String(row[field] ?? "").trim() === "");
+    missingFields.forEach((field) => {
+      warnings.push(createSchemaWarning("missing-required-field", field, row._originalRowNumber));
+    });
+    if (missingFields.length > 0) {
+      return false;
+    }
+
+    const scoreField = config.rank?.sourceField;
+    const scoreValue = scoreField ? String(row[scoreField] ?? "").trim() : "";
+    if (scoreField && scoreValue !== "" && Number.isNaN(parseScore(scoreValue))) {
+      warnings.push(createSchemaWarning("invalid-score", scoreField, row._originalRowNumber));
+    }
+
+    return true;
   });
 
-  return applyRanking(validRows, config.rank);
+  return {
+    data: applyRanking(validRows, config.rank),
+    warnings,
+  };
+}
+
+export function mapRows(rows, config) {
+  return mapRowsWithWarnings(rows, config).data;
 }
 
 export function writeJsonFile(filePath, data) {
@@ -176,13 +245,14 @@ export function mergeWeeklyHistory(currentRows, historyRows = [], config = {}) {
 }
 
 export function syncRows(rows, config) {
-  const data = mapRows(rows, config);
+  const { data, warnings } = mapRowsWithWarnings(rows, config);
   if (!config.outputPath) {
     throw new Error("outputPath is required.");
   }
   const outputPath = writeJsonFile(config.outputPath, data);
   const result = {
     data,
+    warnings,
     outputPath,
   };
 

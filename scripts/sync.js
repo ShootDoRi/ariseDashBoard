@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import {
   loadSyncConfig,
-  mapRows,
+  mapRowsWithWarnings,
   readJsonFile,
   resolveSpreadsheetId,
   syncRows,
@@ -46,6 +46,17 @@ Options:
 Set GOOGLE_SHEETS_API_KEY when syncing directly from Google Sheets.`);
 }
 
+function formatSchemaWarning(warning) {
+  const row = Number.isInteger(warning.rowNumber) ? ` row ${warning.rowNumber}` : "";
+  return `Schema warning [${warning.code}]${row} field ${warning.field}`;
+}
+
+function printSchemaWarnings(warnings = []) {
+  warnings.forEach((warning) => {
+    console.error(formatSchemaWarning(warning));
+  });
+}
+
 async function fetchGoogleSheetRows(config) {
   const apiKeyEnv = config.apiKeyEnv || "GOOGLE_SHEETS_API_KEY";
   const apiKey = process.env[apiKeyEnv];
@@ -85,12 +96,14 @@ export async function runSyncFromCli(argv = process.argv.slice(2)) {
   const rows = inputPath ? readJsonFile(resolve(inputPath)) : await fetchGoogleSheetRows(config);
 
   if (args.dryRun) {
-    const data = mapRows(rows, config);
+    const { data, warnings } = mapRowsWithWarnings(rows, config);
+    printSchemaWarnings(warnings);
     console.log(JSON.stringify(data.slice(0, 5), null, 2));
-    return { data, outputPath: null };
+    return { data, warnings, outputPath: null };
   }
 
   const result = syncRows(rows, config);
+  printSchemaWarnings(result.warnings);
   console.log(`Synced ${result.data.length} rows for ${config.boardName || "community board"}.`);
   console.log(`Wrote ${result.outputPath}.`);
   if (result.historyOutputPath) {

@@ -5,6 +5,7 @@ import { join } from "node:path";
 import {
   extractSpreadsheetIdFromUrl,
   mapRows,
+  mapRowsWithWarnings,
   mergeWeeklyHistory,
   normalizeSpreadsheetId,
   resolveSpreadsheetId,
@@ -90,6 +91,79 @@ test("maps four-column ARISE rows and removes empty or malformed rows", () => {
   assert.equal(mapped[0]._originalRowNumber, 2);
   assert.equal(mapped[1]["인게임_닉"], "A-003");
   assert.equal(mapped[1]._originalRowNumber, 5);
+});
+
+test("maps valid four-column ARISE rows without schema warnings", () => {
+  const rows = [
+    ["A-001", "KR-ALPHA", "154,200", "4"],
+    ["A-002", "KR-BRAVO", "188,910", "1"],
+  ];
+
+  const { data, warnings } = mapRowsWithWarnings(rows, config);
+
+  assert.equal(data.length, 2);
+  assert.deepEqual(warnings, []);
+});
+
+test("warns for empty rows and missing required fields without leaking cell values", () => {
+  const rows = [
+    ["A-001", "KR-ALPHA", "154,200", "4"],
+    ["", "", "", ""],
+    ["A-002", "KR-PRIVATE", "121,000", "2"],
+    ["A-003", "", "188,910", "1"],
+  ];
+
+  const { data, warnings } = mapRowsWithWarnings(rows, config);
+
+  assert.equal(data.length, 2);
+  assert.deepEqual(warnings, [
+    { code: "empty-row", field: "_row", rowNumber: 3 },
+    { code: "missing-required-field", field: "태그", rowNumber: 5 },
+  ]);
+  assert.equal(JSON.stringify(warnings).includes("KR-PRIVATE"), false);
+});
+
+test("warns for invalid scores without leaking raw score or tag values", () => {
+  const rows = [["A-001", "KR-SECRET", "private-score-value", "1"]];
+
+  const { data, warnings } = mapRowsWithWarnings(rows, config);
+  const serializedWarnings = JSON.stringify(warnings);
+
+  assert.equal(data.length, 1);
+  assert.equal(data[0].Rank, "");
+  assert.deepEqual(warnings, [
+    { code: "invalid-score", field: "길드레이드_점수", rowNumber: 2 },
+  ]);
+  assert.equal(serializedWarnings.includes("KR-SECRET"), false);
+  assert.equal(serializedWarnings.includes("private-score-value"), false);
+});
+
+test("warns for missing required column mappings", () => {
+  const rows = [["A-001", "KR-ALPHA", "154,200", "4"]];
+  const configWithTypo = {
+    ...config,
+    columnMapping: {
+      "순번": 0,
+      "태그": 1,
+      "길드레이드점수": 2,
+      "Rank": 3,
+    },
+  };
+
+  const { data, warnings } = mapRowsWithWarnings(rows, configWithTypo);
+
+  assert.equal(data.length, 0);
+  assert.deepEqual(warnings, [
+    { code: "missing-column-mapping", field: "길드레이드_점수" },
+    { code: "missing-required-field", field: "길드레이드_점수", rowNumber: 2 },
+  ]);
+});
+
+test("throws a sanitized error for empty column mappings", () => {
+  assert.throws(
+    () => mapRowsWithWarnings([["A-001", "KR-ALPHA", "154,200", "4"]], { ...config, columnMapping: {} }),
+    /^Error: columnMapping must define at least one output field\.$/
+  );
 });
 
 test("recalculates rank from score and overwrites input rank", () => {
