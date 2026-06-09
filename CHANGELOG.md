@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Added privacy-safe Google Sheets import validation coverage for schema warnings.
+- Documented maintainer evidence, changelog, and security/privacy handling for the next maintenance cycle.
+
 ## 0.1.0 - 2026-06-01
 
 - Generalized the dashboard as Community Ops Dashboard.
